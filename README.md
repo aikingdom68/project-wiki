@@ -48,6 +48,8 @@ node scripts/install.mjs . --force
 ~/.claude/skills/project-wiki/
 ```
 
+> 注意：手动安装时，建议**复制真实文件**，不要使用符号链接、junction 或其他链接方式来代替复制。
+
 最终结构应类似：
 
 ```text
@@ -116,6 +118,8 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
    - 更强调项目知识层，而不是普通搜索
    - 更强调证据、页面、结构、缺口
    - 不会直接退化成泛泛的 repo chat
+
+说明：这个 `doctor` 更偏向**仓库完整性 / 安装文件完整性检查**。它能帮助你确认 skill 文件集是否齐全，但并不能替代真实 prompt 测试。
 
 ## 作为平台能力来使用
 

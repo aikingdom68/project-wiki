@@ -18,7 +18,7 @@ Only publish the contents of this repository:
 - `scripts/`
 - `evals/`
 
-Do **not** mix files from `G:/meta2` into this repository unless explicitly copied in as part of a later release process.
+Do **not** mix files from other workspaces or upstream repositories into this repository unless explicitly copied in as part of a later release process.
 
 ## Recommended next publishing steps
 1. Review repository contents

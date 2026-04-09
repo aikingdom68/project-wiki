@@ -30,11 +30,13 @@ const requiredFiles = [
   "examples/explain-project.md",
   "examples/source-guided-explain.md",
   "examples/build-wiki-plan.md",
+  "examples/compare-options.md",
   "scripts/doctor.mjs",
   "scripts/install.mjs",
   "evals/README.md",
   "evals/cases/source-guided-example-bank.json",
   "evals/cases/project-explanation-basic.json",
+  "evals/cases/compare-options-local-evidence.json",
 ];
 
 let ok = true;

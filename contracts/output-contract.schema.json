@@ -33,6 +33,7 @@
     },
     "evidence": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "required": ["source", "why_it_matters"],
@@ -66,6 +67,58 @@
     "confidence": {
       "type": "string",
       "enum": ["high", "medium", "low"]
+    },
+    "comparison_matrix": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["option", "evidence"],
+        "properties": {
+          "option": {"type": "string"},
+          "local_fit": {"type": "string"},
+          "complexity": {"type": "string"},
+          "maintainability": {"type": "string"},
+          "performance": {"type": "string"},
+          "evidence": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "recommendation": {
+      "type": "string"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "update_plan": {
+      "type": "array",
+      "items": {"type": "string"}
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"task_type": {"const": "compare"}}},
+      "then": {
+        "required": ["comparison_matrix", "recommendation", "assumptions"]
+      }
+    },
+    {
+      "if": {"properties": {"task_type": {"const": "evaluate"}}},
+      "then": {
+        "required": ["recommendation", "assumptions"]
+      }
+    },
+    {
+      "if": {"properties": {"task_type": {"const": "build_wiki"}}},
+      "then": {
+        "required": ["update_plan"]
+      }
+    },
+    {
+      "if": {"properties": {"task_type": {"const": "source_guided_explain"}}},
+      "then": {
+        "required": ["source_derived", "local_supplement", "general_supplement"]
+      }
+    }
+  ]
 }

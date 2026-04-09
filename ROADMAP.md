@@ -7,6 +7,7 @@
 3. add lightweight eval regression checks
 4. improve install and doctor tooling
 5. keep README beginner-friendly while preserving platform-spec depth
+6. add conflict-resolution examples and source-priority regression cases
 
 ## Explicit non-goals for now
 

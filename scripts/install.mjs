@@ -69,7 +69,17 @@ function copyRecursive(source, target) {
 }
 
 assertFileExists("SKILL.md");
+assertFileExists("README.md");
+assertFileExists("LICENSE");
+assertFileExists("CHANGELOG.md");
+assertFileExists("RELEASE.md");
+assertFileExists("PUBLISHING.md");
+assertFileExists("ROADMAP.md");
+assertFileExists("contracts");
 assertFileExists("references");
+assertFileExists("examples");
+assertFileExists("scripts");
+assertFileExists("evals");
 
 if (path.resolve(src) === path.resolve(dst)) {
   console.error("Source and destination are the same path; aborting.");
