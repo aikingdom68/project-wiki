@@ -511,27 +511,35 @@ Before treating an output as solid:
 
 Read these files when needed:
 
+### Runtime/core guidance
 - `references/llm-wiki-core.md`
   - Read when deciding how to structure persistent knowledge instead of producing one-off answers.
-
 - `references/local-rag-engineering.md`
   - Read when retrieval strategy, chunking, parent-child context, metadata, or hybrid retrieval design matters.
-
 - `references/project-assistant-playbook.md`
   - Read when producing explanation, evaluation, comparison, onboarding, or decision-support outputs.
-
 - `references/modes-and-safety.md`
   - Read when deciding between local-first and online/API-enhanced behavior, or when privacy/safety boundaries matter.
+- `references/source-priority-guidance.md`
+  - Read when a preferred local knowledge source should shape explanation order or style.
+- `references/system-integration-guidance.md`
+  - Read when using Project Wiki as a capability specification inside a future product or platform.
+
+### Maintenance and quality guidance
+- `references/evidence-and-citation.md`
+  - Read when outputs need a consistent evidence-backed format.
+- `references/wiki-quality-audit.md`
+  - Read when auditing page quality, stale knowledge, conflicts, or unsupported claims.
+- `references/incremental-update-protocol.md`
+  - Read when planning narrow, traceable updates instead of broad rewrites.
+
+### Reusable templates
+- `references/templates/*.md`
+  - Read when generating overview, module, decision, glossary, or troubleshooting pages.
 
 ## Source-Priority Guidance
 
 When a user names a preferred local knowledge source, treat it as a first-class instruction.
-
-### Explanation priority order
-
-1. explain from the preferred local source first
-2. supplement with other local evidence if needed
-3. only then use broader or external knowledge
 
 ### Explanation priority order
 

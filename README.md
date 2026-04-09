@@ -18,7 +18,31 @@
 
 ## 安装与调用
 
-这是一个独立 skill 仓库。最简单的使用方式是把整个仓库目录复制到你的 Claude Code skills 目录中，例如：
+这是一个独立 skill 仓库。
+
+### 一键安装（推荐）
+
+在仓库根目录运行：
+
+```bash
+node scripts/install.mjs . --dry-run
+node scripts/install.mjs . --clean
+```
+
+如果你明确知道自己要覆盖同名文件、但不想清空旧目录，可以用：
+
+```bash
+node scripts/install.mjs . --force
+```
+
+说明：
+- `--clean`：推荐用于升级，会先替换目标目录，避免旧文件残留
+- `--force`：只覆盖同名文件，不保证清洁升级
+- `--dry-run`：先预览将要安装的内容
+
+### 手动安装
+
+最简单的手动方式是把整个仓库目录复制到你的 Claude Code skills 目录中，例如：
 
 ```text
 ~/.claude/skills/project-wiki/
@@ -29,13 +53,17 @@
 ```text
 ~/.claude/skills/project-wiki/
   SKILL.md
+  README.md
+  LICENSE
+  CHANGELOG.md
+  RELEASE.md
+  PUBLISHING.md
+  ROADMAP.md
+  contracts/
   references/
-    llm-wiki-core.md
-    local-rag-engineering.md
-    project-assistant-playbook.md
-    modes-and-safety.md
-    source-priority-guidance.md
-    system-integration-guidance.md
+  examples/
+  scripts/
+  evals/
 ```
 
 在 Claude Code 中，你可以这样触发它：
@@ -56,16 +84,27 @@
 
 ## 60 秒自检
 
-安装后可以用这 4 步快速确认它是否工作正常：
+安装后可以先运行：
+
+```bash
+node scripts/doctor.mjs .
+```
+
+或者如果已经安装到 skills 目录中：
+
+```bash
+node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-wiki
+```
+
+然后再用下面 4 步快速确认它是否工作正常：
 
 1. 检查目录里是否至少有：
    - `SKILL.md`
-   - `references/llm-wiki-core.md`
-   - `references/local-rag-engineering.md`
-   - `references/project-assistant-playbook.md`
-   - `references/modes-and-safety.md`
-   - `references/source-priority-guidance.md`
-   - `references/system-integration-guidance.md`
+   - `contracts/`
+   - `references/`
+   - `examples/`
+   - `scripts/`
+   - `evals/`
 2. 在 Claude Code 中进入一个真实项目目录。
 3. 输入：
 
@@ -359,6 +398,7 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 
 ## 主文件
 
+### 核心运行文件
 - `SKILL.md` — 主 skill
 - `references/llm-wiki-core.md` — LLM Wiki 世界观
 - `references/local-rag-engineering.md` — 本地检索 / RAG 工程支持
@@ -366,6 +406,17 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 - `references/modes-and-safety.md` — local-first 与 online/API-enhanced 边界
 - `references/source-priority-guidance.md` — 指定本地知识源优先讲解与讲解风格复用规则
 - `references/system-integration-guidance.md` — 作为平台能力规范时的系统使用方式
+
+### 维护与质量文件
+- `contracts/*.json` — source policy 与 output contract
+- `references/evidence-and-citation.md` — 轻量证据引用规范
+- `references/wiki-quality-audit.md` — wiki 质量审计规则
+- `references/incremental-update-protocol.md` — 增量更新协议
+- `references/templates/*.md` — 页面模板
+- `examples/*.md` — 高质量使用样例
+- `scripts/install.mjs` / `scripts/doctor.mjs` — 安装与自检工具
+- `evals/` — 轻量 golden cases
+- `ROADMAP.md` — 路线图
 
 ## 使用风格
 

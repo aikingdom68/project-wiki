@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project Wiki Output Contract",
+  "type": "object",
+  "required": [
+    "task_type",
+    "verified_facts",
+    "synthesis",
+    "evidence",
+    "gaps",
+    "confidence"
+  ],
+  "properties": {
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "explain",
+        "evaluate",
+        "compare",
+        "decide",
+        "build_wiki",
+        "update_wiki",
+        "source_guided_explain"
+      ]
+    },
+    "verified_facts": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "synthesis": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "why_it_matters"],
+        "properties": {
+          "source": {"type": "string"},
+          "section_or_symbol": {"type": "string"},
+          "why_it_matters": {"type": "string"}
+        }
+      }
+    },
+    "source_derived": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "local_supplement": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "general_supplement": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "gaps": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    }
+  }
+}

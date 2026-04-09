@@ -11,7 +11,12 @@ Only publish the contents of this repository:
 - `CHANGELOG.md`
 - `RELEASE.md`
 - `PUBLISHING.md`
+- `ROADMAP.md`
+- `contracts/`
 - `references/`
+- `examples/`
+- `scripts/`
+- `evals/`
 
 Do **not** mix files from `G:/meta2` into this repository unless explicitly copied in as part of a later release process.
 

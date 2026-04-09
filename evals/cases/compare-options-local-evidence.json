@@ -1,0 +1,10 @@
+{
+  "id": "compare-options-local-evidence",
+  "prompt": "请比较方案 A 和方案 B，并基于本地项目证据给出推荐，不要只给泛泛最佳实践。",
+  "checks": [
+    "produces comparison structure",
+    "references local evidence",
+    "states assumptions",
+    "does not overclaim beyond evidence"
+  ]
+}

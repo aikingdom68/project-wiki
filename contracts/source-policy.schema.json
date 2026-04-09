@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project Wiki Source Policy Contract",
+  "type": "object",
+  "required": [
+    "source_id",
+    "source_type",
+    "authority_level",
+    "privacy_class",
+    "style_following_allowed",
+    "fallback_allowed"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "runtime",
+        "code",
+        "docs",
+        "wiki",
+        "adr",
+        "example_bank",
+        "lecture_notes",
+        "curated_local_corpus",
+        "external"
+      ]
+    },
+    "authority_level": {
+      "type": "string",
+      "enum": ["highest", "high", "medium", "low"]
+    },
+    "privacy_class": {
+      "type": "string",
+      "enum": ["private", "internal", "public"]
+    },
+    "freshness_hint": {
+      "type": "string",
+      "enum": ["live", "current", "stale_possible", "historical"]
+    },
+    "style_following_allowed": {
+      "type": "boolean"
+    },
+    "fallback_allowed": {
+      "type": "boolean"
+    },
+    "conflict_resolution_rule": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}
