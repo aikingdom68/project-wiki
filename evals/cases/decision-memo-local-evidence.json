@@ -1,0 +1,11 @@
+{
+  "id": "decision-memo-local-evidence",
+  "prompt": "请根据当前项目证据给出一个决策备忘录：我们是否应该引入新的向量检索层？",
+  "checks": [
+    "includes decision statement",
+    "includes alternatives considered",
+    "includes trade-offs",
+    "includes evidence anchors",
+    "includes what still needs validation"
+  ]
+}

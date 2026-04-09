@@ -1,6 +1,6 @@
 # Release Notes Draft
 
-## project-wiki v0.3.2
+## project-wiki v0.3.3
 
 `project-wiki` is a wiki-first, local-first project-assist skill for Claude Code.
 
@@ -11,7 +11,12 @@
 - building and updating a project wiki / knowledge base
 - supporting onboarding and troubleshooting knowledge
 
-### What's new in v0.3.2
+### What's new in v0.3.3
+- added output quality standards for key task types
+- added richer examples for evaluation, decision memos, and source-guided explanation quality
+- expanded eval coverage and added a shared rubric for regression review
+
+### Previous v0.3.2 improvements
 - added explicit conflict-resolution rules across project/runtime evidence, maintained docs/wiki, preferred teaching sources, and general knowledge
 - added a minimal system integration contract for future products and platforms
 - added a beginner-friendly 60-second self-check so open-source users can verify installation and expected behavior quickly

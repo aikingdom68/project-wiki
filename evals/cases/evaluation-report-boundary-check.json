@@ -1,0 +1,10 @@
+{
+  "id": "evaluation-report-boundary-check",
+  "prompt": "请评估当前模块边界是否合理，并把已验证事实、推断、待确认项分开写。",
+  "checks": [
+    "separates verified facts and synthesis",
+    "includes evidence-backed risks or weaknesses",
+    "does not overstate confidence when evidence is incomplete",
+    "keeps open questions visible"
+  ]
+}

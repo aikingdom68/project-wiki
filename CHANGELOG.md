@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] - 2026-04-09
+
+### Added
+- Output quality standards for explanation, evaluation, comparison, decision, and wiki-update outputs
+- Additional examples for evaluation report, decision memo, and source-guided explanation quality
+- Additional eval cases and a shared rubric for regression review
+
 ## [0.3.2] - 2026-04-09
 
 ### Added

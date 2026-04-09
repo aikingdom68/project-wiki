@@ -532,6 +532,8 @@ Read these files when needed:
   - Read when auditing page quality, stale knowledge, conflicts, or unsupported claims.
 - `references/incremental-update-protocol.md`
   - Read when planning narrow, traceable updates instead of broad rewrites.
+- `references/output-quality-standards.md`
+  - Read when checking whether explanation, evaluation, comparison, decision, or update outputs meet the minimum quality bar.
 
 ### Reusable templates
 - `references/templates/*.md`

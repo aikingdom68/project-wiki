@@ -416,10 +416,11 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 - `references/evidence-and-citation.md` — 轻量证据引用规范
 - `references/wiki-quality-audit.md` — wiki 质量审计规则
 - `references/incremental-update-protocol.md` — 增量更新协议
+- `references/output-quality-standards.md` — 输出质量最低标准
 - `references/templates/*.md` — 页面模板
 - `examples/*.md` — 高质量使用样例
 - `scripts/install.mjs` / `scripts/doctor.mjs` — 安装与自检工具
-- `evals/` — 轻量 golden cases
+- `evals/` — 轻量 golden cases 与 rubric
 - `ROADMAP.md` — 路线图
 
 ## 使用风格
