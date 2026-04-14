@@ -1,61 +1,64 @@
 # project-wiki
 
-`project-wiki` 是一个独立开源的 Claude Code skill，用来把**项目资料**整理成可持续维护的知识层，并在此基础上帮助你做：
+> Language note: this is the English default README. For the Chinese version, see [README.zh-CN.md](README.zh-CN.md).
 
-- 项目解释
-- 项目评估
-- 方案对比
-- 决策支持
-- 知识库 / wiki 建设与更新
+`project-wiki` is an independent open-source Claude Code skill for organizing **project materials** into a maintainable knowledge layer, and then using that layer to help you with:
 
-它的核心不是“让检索看起来更聪明”，而是让**项目知识更稳定、更可信、更可复用**。
+- project explanation
+- project evaluation
+- solution comparison
+- decision support
+- knowledge base / wiki creation and updates
 
-它围绕三个核心点设计：
+Its core goal is not to make retrieval “look smarter,” but to make **project knowledge more stable, more trustworthy, and more reusable**.
 
-- **LLM Wiki 是骨架** —— 持久、可维护的项目知识页
-- **Local RAG 是证据层** —— 检索支撑 wiki，而不是替代 wiki
-- **Project Assistance 是产品目标** —— 真正服务项目工作，而不只是搜索
+It is designed around three core ideas:
 
-## 安装与调用
+- **LLM Wiki is the skeleton** — persistent, maintainable project knowledge pages
+- **Local RAG is the evidence layer** — retrieval supports the wiki instead of replacing it
+- **Project Assistance is the product goal** — it should serve real project work, not just search
 
-这是一个独立 skill 仓库。
+## Installation and Invocation
 
-### 一键安装（推荐）
+This is a standalone skill repository.
 
-在仓库根目录运行：
+### One-command install (recommended)
+
+Run from the repository root:
 
 ```bash
 node scripts/install.mjs . --dry-run
 node scripts/install.mjs . --clean
 ```
 
-如果你明确知道自己要覆盖同名文件、但不想清空旧目录，可以用：
+If you know you want to overwrite files with the same name but do not want to clear the old directory first, you can use:
 
 ```bash
 node scripts/install.mjs . --force
 ```
 
-说明：
-- `--clean`：推荐用于升级，会先替换目标目录，避免旧文件残留
-- `--force`：只覆盖同名文件，不保证清洁升级
-- `--dry-run`：先预览将要安装的内容
+Notes:
+- `--clean`: recommended for upgrades; replaces the target directory first to avoid leftover old files
+- `--force`: only overwrites files with the same name and does not guarantee a clean upgrade
+- `--dry-run`: previews what will be installed
 
-### 手动安装
+### Manual installation
 
-最简单的手动方式是把整个仓库目录复制到你的 Claude Code skills 目录中，例如：
+The simplest manual approach is to copy the entire repository directory into your Claude Code skills directory, for example:
 
 ```text
 ~/.claude/skills/project-wiki/
 ```
 
-> 注意：手动安装时，建议**复制真实文件**，不要使用符号链接、junction 或其他链接方式来代替复制。
+> Note: for manual installation, it is recommended to **copy real files**. Do not use symlinks, junctions, or other link-based approaches instead of copying.
 
-最终结构应类似：
+The final structure should look like:
 
 ```text
 ~/.claude/skills/project-wiki/
   SKILL.md
   README.md
+  README.zh-CN.md
   LICENSE
   CHANGELOG.md
   RELEASE.md
@@ -68,142 +71,126 @@ node scripts/install.mjs . --force
   evals/
 ```
 
-在 Claude Code 中，你可以这样触发它：
+In Claude Code, you can trigger it like this:
 
 ```text
-请用 project-wiki 解释这个项目的核心架构。
+Please use project-wiki to explain the core architecture of this project.
 ```
 
-或者直接使用 slash skill：
+Or invoke it directly as a slash skill:
 
 ```text
-/project-wiki 请为这个项目设计一个离线优先的 wiki 结构。
+/project-wiki Please design an offline-first wiki structure for this project.
 ```
 
-默认建议在你的目标项目目录中使用它，让 Claude 能读取当前项目文件作为本地证据。
+By default, it is best used inside your target project directory so Claude can read the current project files as local evidence.
 
-注意：虽然 skill 声明了 browser 能力，但默认仍然是 **local-first**。除非你明确授权，或确实需要查询公开外部事实，否则不应把私有项目内容发送到在线搜索或外部 API。
+Note: although the skill declares browser capability, the default posture is still **local-first**. Unless you explicitly authorize it, or you truly need public external facts, private project content should not be sent to online search or external APIs.
 
-## 60 秒自检
+## 60-Second Self-Check
 
-安装后可以先运行：
+After installation, you can first run:
 
 ```bash
 node scripts/doctor.mjs .
 ```
 
-或者如果已经安装到 skills 目录中：
+Or if it is already installed into your skills directory:
 
 ```bash
 node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-wiki
 ```
 
-然后再用下面 4 步快速确认它是否工作正常：
+Then use the following 4 steps to quickly confirm it works:
 
-1. 检查目录里是否至少有：
+1. Check that the directory contains at least:
    - `SKILL.md`
    - `contracts/`
    - `references/`
    - `examples/`
    - `scripts/`
    - `evals/`
-2. 在 Claude Code 中进入一个真实项目目录。
-3. 输入：
+2. Enter a real project directory in Claude Code.
+3. Type:
 
 ```text
-请用 project-wiki 解释这个项目。
+Please use project-wiki to explain this project.
 ```
 
-4. 看它是否按 `project-wiki` 的风格回应：
-   - 更强调项目知识层，而不是普通搜索
-   - 更强调证据、页面、结构、缺口
-   - 不会直接退化成泛泛的 repo chat
+4. Check whether it responds in the `project-wiki` style:
+   - it emphasizes the project knowledge layer more than generic search
+   - it emphasizes evidence, pages, structure, and gaps
+   - it does not collapse into generic repo chat
 
-说明：这个 `doctor` 更偏向**仓库完整性 / 安装文件完整性检查**。它能帮助你确认 skill 文件集是否齐全，但并不能替代真实 prompt 测试。
+Note: this `doctor` command is primarily for **repository integrity / installation file completeness checks**. It helps confirm that the skill file set is complete, but it is not a substitute for real prompt testing.
 
-## 作为平台能力来使用
+## Use It as a Platform Capability
 
-`project-wiki` 不只是给你在 Claude 对话里使用的 skill。
+`project-wiki` is not only a skill for Claude conversations.
 
-它也可以被理解成一种**系统能力规范**，用于你未来自己做的平台，例如：
-- 讲题平台
-- 教学解释系统
-- 项目讲解系统
-- 本地知识驱动的 explanation engine
+It can also be understood as a **system capability specification** for platforms you may build later, such as:
 
-在这种场景下，`project-wiki` 定义的不是“用户该怎么说 prompt”，而是：
-- 系统如何识别主知识源
-- 系统如何决定知识源优先级
-- 系统如何按知识源的思路组织讲解
-- 系统如何区分例题思路、本地补充说明和一般性补充
-- 系统在知识源冲突时应该如何显式裁决
+- problem explanation platforms
+- teaching/explanation systems
+- project explanation systems
+- local-knowledge-driven explanation engines
 
-如果你在做讲题平台，这一点尤其重要：
-- 例题库可以是主知识源
-- 系统讲解时应优先调用例题库
-- 系统应尽量沿用例题库的分析顺序、术语和解题节奏
-- 如果例题库不足，再补充其他本地资料，最后才补一般知识
-- 如果例题库与项目当前实现或项目 docs/wiki 冲突，应显式标记冲突，而不是自动揉成一个答案
+In this kind of setting, `project-wiki` does not define “how the user should write the prompt,” but instead defines:
 
-更完整的说明见：
+- how the system identifies the primary knowledge source
+- how the system decides source priority
+- how the system organizes explanations according to source logic
+- how the system distinguishes example-based reasoning, local supplementary explanation, and general supplementary knowledge
+- how the system should explicitly resolve conflicts between knowledge sources
+
+This is especially important if you are building a problem-explanation platform:
+
+- an example library can be the primary knowledge source
+- the system should prioritize the example library during explanation
+- the system should try to follow the example library’s analysis order, terminology, and problem-solving rhythm
+- if the example library is insufficient, the system should supplement with other local materials, and only then with general knowledge
+- if the example library conflicts with the current project implementation or the project docs/wiki, the conflict should be marked explicitly instead of being silently blended into one answer
+
+For more complete guidance, see:
 - `references/source-priority-guidance.md`
 - `references/system-integration-guidance.md`
 - `references/knowledge-lifecycle.md`
 
-## 什么时候用
+## When to Use It
 
-当你想要：
-- 快速解释一个项目、模块或架构
-- 比较两个技术方案并基于本地证据给出建议
-- 评估设计质量、边界、技术债或迁移路径
-- 为项目建立或更新 wiki / knowledge base
-- 生成 onboarding 总结、ADR 风格结论、模块地图或 troubleshooting 页面
+Use it when you want to:
 
-## 什么时候不要用
+- quickly explain a project, module, or architecture
+- compare two technical approaches and make recommendations based on local evidence
+- evaluate design quality, boundaries, technical debt, or migration paths
+- build or update a project wiki / knowledge base
+- generate onboarding summaries, ADR-style conclusions, module maps, or troubleshooting pages
 
-当你只是：
-- 查一个符号、一个文件、一个配置项
-- 做一次性摘要，不打算沉淀知识
-- 只需要普通搜索，而不需要项目知识结构
-- 做外部市场研究，而不是整理项目本地知识
+## When Not to Use It
 
-## 差异化优势 / Competitive Advantages
+Do not use it when you only need to:
 
-语言切换 / Language switch: [中文](#competitive-advantages-zh) | [English](#competitive-advantages-en)
+- look up one symbol, one file, or one config item
+- create a one-off summary without accumulating knowledge
+- do ordinary search without needing project knowledge structure
+- do external market research instead of organizing local project knowledge
 
-<a id="competitive-advantages-zh"></a>
+## Competitive Advantages
 
-### 中文
-
-- **相对纯 RAG**：纯 RAG 的重点通常是“找回相关片段并回答当前问题”；`project-wiki` 的重点是把高价值理解沉淀成稳定页面，让知识随着使用持续累积，而不是每次重新召回、重新生成。
-- **相对 Repo Chat / 代码库问答**：Repo Chat 更偏即时问答；`project-wiki` 更强调证据、页面结构、缺口、决策上下文和更新路径，适合项目解释、设计评估、方案对比、onboarding 与 troubleshooting 沉淀。
-- **相对静态 wiki / 普通文档库**：传统文档更擅长“存放内容”；`project-wiki` 更强调 source priority、事实与推断分离、显式冲突处理，以及围绕项目工作来持续更新知识层，而不只是堆文档。
-- **相对通用 AI 记忆 / 笔记产品**：通用产品往往偏个人记录或自由检索；`project-wiki` 更强调项目语境、主知识源优先级，以及在本地证据不足时才谨慎回退到一般知识。
-- **相对云端优先 / 外部索引优先产品**：很多产品默认把内容发到外部索引或在线服务；`project-wiki` 默认是 **local-first**，更适合私有仓库、敏感材料和离线优先流程。
-- **相对一次性总结工具**：一次性总结更容易过期；`project-wiki` 现在还支持轻量生命周期语义，例如 `review_status`、`supersedes`、`retention_class`、`consolidation_status`，更适合长期维护。
-
-一句话总结：
-
-> 纯 RAG 更像“把片段找回来”，Repo Chat 更像“现在问、现在答”，而 `project-wiki` 更像“把项目知识整理成长期可维护、可验证、可复用的工作层”。
-
-<a id="competitive-advantages-en"></a>
-
-### English
-
-- **Compared with pure RAG**: pure RAG usually optimizes for retrieving relevant chunks and answering the question of the moment; `project-wiki` optimizes for compiling durable project pages so knowledge compounds instead of being re-retrieved and re-generated every time.
-- **Compared with Repo Chat / repository Q&A**: Repo Chat is usually optimized for interactive Q&A; `project-wiki` emphasizes evidence, page structure, known gaps, decision context, and update paths, which makes it better suited for project explanation, evaluation, trade-off analysis, onboarding, and troubleshooting capture.
-- **Compared with static wikis or generic doc repositories**: traditional documentation tools are good at storing content; `project-wiki` adds source priority, fact-vs-synthesis separation, explicit conflict handling, and a workflow for continuously improving project knowledge instead of merely accumulating documents.
-- **Compared with generic AI memory or note-taking products**: generic products often optimize for personal capture or freeform retrieval; `project-wiki` is more opinionated about project context, preferred local knowledge sources, and only falling back to general knowledge when local evidence is insufficient.
-- **Compared with cloud-first or external-index-first products**: many products assume content will be uploaded to external services or remote indexes; `project-wiki` is **local-first** by default, which is a better fit for private repositories, sensitive materials, and offline-oriented workflows.
-- **Compared with one-off summary tools**: one-off summaries go stale quickly; `project-wiki` now also supports lightweight lifecycle semantics such as `review_status`, `supersedes`, `retention_class`, and `consolidation_status`, making it more suitable for long-lived maintenance.
+- **Compared with pure RAG**: pure RAG usually focuses on retrieving relevant chunks and answering the current question; `project-wiki` focuses on turning high-value understanding into durable pages so knowledge accumulates over time instead of being re-retrieved and re-generated every time.
+- **Compared with Repo Chat / repository Q&A**: Repo Chat is more oriented toward immediate Q&A; `project-wiki` emphasizes evidence, page structure, gaps, decision context, and update paths, making it better suited to project explanation, design evaluation, trade-off analysis, onboarding, and troubleshooting capture.
+- **Compared with static wikis or generic document repositories**: traditional documentation is good at storing content; `project-wiki` emphasizes source priority, separation between facts and synthesis, explicit conflict handling, and continuous maintenance of a project knowledge layer instead of just accumulating documents.
+- **Compared with generic AI memory or note-taking products**: generic tools often optimize for personal recording or free retrieval; `project-wiki` is more opinionated about project context, primary knowledge source priority, and only cautiously falls back to general knowledge when local evidence is insufficient.
+- **Compared with cloud-first or external-index-first products**: many products assume content is sent to external indexes or online services; `project-wiki` is **local-first** by default, making it a better fit for private repositories, sensitive materials, and offline-oriented workflows.
+- **Compared with one-off summary tools**: one-off summaries go stale easily; `project-wiki` now also supports lightweight lifecycle semantics such as `review_status`, `supersedes`, `retention_class`, and `consolidation_status`, making it better suited for long-term maintenance.
 
 One-line summary:
 
-> Pure RAG is about "retrieve the right chunk," Repo Chat is about "ask now, answer now," and `project-wiki` is about turning project knowledge into a durable, evidence-backed, reusable working layer.
+> Pure RAG is about “retrieving the right chunk,” Repo Chat is about “ask now, answer now,” and `project-wiki` is about turning project knowledge into a durable, evidence-backed, reusable working layer.
 
-## 页面标签与 contract key 对照
+## Page Labels and Contract Key Mapping
 
-为了让页面模板、示例和 contracts 使用同一套轻量生命周期词汇，建议按下面的映射理解：
+To let page templates, examples, and contracts share the same lightweight lifecycle vocabulary, the following mappings are recommended:
 
 - `Review status` -> `review_status`
 - `Last reviewed` -> `last_reviewed`
@@ -213,267 +200,268 @@ One-line summary:
 - `Consolidation status` -> `consolidation_status`
 - `Crystallized from` -> `crystallized_from`
 
-这些字段只在它们能改善维护清晰度时使用，不要求每一页都写满。
+These fields should only be used when they improve maintenance clarity; not every page needs all of them.
 
-## 小白三句法
+## The Three-Sentence Beginner Version
 
-如果你是第一次用，先记住这三句就够了：
+If this is your first time using it, these three prompts are enough to start:
 
-### 1) 解释项目
+### 1) Explain the project
 ```text
-请用 project-wiki 解释这个项目。
+Please use project-wiki to explain this project.
 ```
 
-### 2) 建立或更新 wiki
+### 2) Build or update the wiki
 ```text
-请用 project-wiki 为这个项目建立或更新 wiki。
+Please use project-wiki to build or update the wiki for this project.
 ```
 
-### 3) 优先按某个知识源来讲
+### 3) Explain using a preferred knowledge source first
 ```text
-请用 project-wiki 优先根据我的例题库讲解这道题，并按例题思路来讲。
+Please use project-wiki to explain this problem primarily based on my example library, and follow the example’s reasoning style as much as possible.
 ```
 
 ## Quick Start
 
-如果你第一次使用 `project-wiki`，可以直接从下面几类请求开始。
+If you are using `project-wiki` for the first time, you can start directly with the following request types.
 
-### 1) 先理解项目
+### 1) Understand the project first
 
 ```text
-请用 project-wiki 解释这个项目的核心目标、主要模块、关键依赖关系，并列出最重要的 5 个证据文件。
+Please use project-wiki to explain this project's core goals, major modules, and key dependency relationships, and list the 5 most important evidence files.
 ```
 
-### 2) 理解某个模块
+### 2) Understand a specific module
 
 ```text
-请用 project-wiki 解释 xxx 模块：它负责什么、依赖什么、边界是否清晰，并把已验证事实、推断、待确认项分开写。
+Please use project-wiki to explain the xxx module: what it is responsible for, what it depends on, whether its boundaries are clear, and separate verified facts, inferences, and items that still need confirmation.
 ```
 
-### 3) 做方案对比
+### 3) Compare solutions
 
 ```text
-请用 project-wiki 比较方案 A 和方案 B，优先基于当前仓库的本地证据分析适配度，不要只讲通用最佳实践。
+Please use project-wiki to compare solution A and solution B, prioritizing fit analysis based on the current repository’s local evidence rather than only giving generic best practices.
 ```
 
-### 4) 设计项目 wiki
+### 4) Design a project wiki
 
 ```text
-请用 project-wiki 为这个项目设计一个离线优先的 wiki 结构，要求适合个人先维护，也方便团队后续复用。
+Please use project-wiki to design an offline-first wiki structure for this project that works well for individual maintenance first and later team reuse.
 ```
 
-### 5) 安全写入模式
+### 5) Safe write mode
 
 ```text
-请先给出 wiki 更新计划和目标文件路径，等我确认后再写入具体文档。
+Please first provide the wiki update plan and the target file paths, and wait for my confirmation before writing any actual documents.
 ```
 
-### 6) 指定知识源优先讲解
+### 6) Explain with a specified knowledge source priority
 
 ```text
-我在做一个讲解题目的系统，我有一个例题库。请用 project-wiki 讲解这道题时优先调用例题库里的知识，并尽量按例题的思路来讲。
+I am building a system for explaining problems, and I have an example library. Please use project-wiki to explain this problem by prioritizing knowledge from the example library and following the example’s reasoning style as much as possible.
 ```
 
-### 7) 更精准的触发方式
+### 7) A more precise trigger style
 
 ```text
-请用 project-wiki 优先基于例题库讲解这道题。要求：
-1. 先找相关例题
-2. 优先复用例题中的分析步骤
-3. 不足时再补充一般知识
-4. 把例题思路和补充说明区分开
+Please use project-wiki to explain this problem based primarily on the example library. Requirements:
+1. Find relevant examples first
+2. Reuse the analytical steps from the examples whenever possible
+3. Supplement with general knowledge only when necessary
+4. Clearly distinguish the example-based reasoning from the supplementary explanation
 ```
 
-## 你会得到什么输出
+## What Outputs You Can Expect
 
-`project-wiki` 主要输出这些结果：
+`project-wiki` mainly produces the following outputs:
 
-- **项目解释报告**：解释项目、模块、架构、数据流
-- **评估报告**：评估方案、设计、边界、风险、技术债
-- **对比矩阵**：结构化比较多个选项
-- **决策备忘录**：给出推荐、理由、证据、待验证项
-- **wiki 构建/更新计划**：告诉你该先建什么页、怎么补缺口、怎么更新
+- **project explanation reports**: explain the project, modules, architecture, and data flow
+- **evaluation reports**: evaluate solutions, design, boundaries, risks, and technical debt
+- **comparison matrices**: structured comparison of multiple options
+- **decision memos**: recommendations, reasons, evidence, and items that still need validation
+- **wiki build/update plans**: what pages to create first, how to fill gaps, and how to update existing knowledge
 
-## 典型使用场景
+## Typical Use Cases
 
-### 1. 接手旧项目
-让它先生成：
-- 项目总览
-- 架构地图
-- 模块索引
-- 术语页
+### 1. Taking over an old project
+Have it generate:
+- a project overview
+- an architecture map
+- a module index
+- glossary pages
 
-### 2. 理解复杂模块
-让它围绕某个模块输出：
-- 模块职责
-- 依赖关系
-- 边界判断
-- 证据与待确认项
+### 2. Understanding a complex module
+Have it produce around a specific module:
+- module responsibility
+- dependency relationships
+- boundary judgment
+- evidence and items needing confirmation
 
-### 3. 技术选型或方案比较
-让它基于本地项目证据做：
-- trade-off matrix
-- 风险说明
-- 推荐结论
-- 待验证事项
+### 3. Technology selection or solution comparison
+Have it use local project evidence to produce:
+- a trade-off matrix
+- a risk explanation
+- a recommendation
+- items still needing verification
 
-### 4. 新人 onboarding
-让它生成：
-- 30 分钟上手知识页骨架
-- 推荐阅读顺序
-- 关键术语与模块入口
+### 4. Newcomer onboarding
+Have it generate:
+- a 30-minute onboarding knowledge-page skeleton
+- a recommended reading order
+- key terms and module entry points
 
-### 5. 文档整理与排障沉淀
-让它把零散材料整理成：
-- troubleshooting 页面
-- known issues 页
-- decision 记录
-- 缺失文档清单
+### 5. Documentation cleanup and troubleshooting capture
+Have it turn scattered materials into:
+- troubleshooting pages
+- known issues pages
+- decision records
+- lists of missing documentation
 
-### 6. 讲题 / 教学系统场景
-如果你有：
-- 例题库
-- 讲义
-- 题解集
-- 自己整理的知识库
+### 6. Problem-explanation / teaching-system scenarios
+If you have:
+- an example library
+- course notes
+- solution collections
+- your own curated knowledge base
 
-那么可以让 `project-wiki`：
-- 优先从这些本地知识源里找相关内容
-- 优先按这些材料的讲解顺序和术语来讲
-- 不足时再补充一般知识
-- 区分“例题思路”和“补充说明”
+Then you can ask `project-wiki` to:
+- prioritize finding relevant content from those local knowledge sources
+- prioritize following their explanation order and terminology
+- supplement with general knowledge only when needed
+- distinguish between “example-based reasoning” and “supplementary explanation”
 
-## 自动触发 vs 精准触发
+## Automatic Trigger vs Precise Trigger
 
-### 自动触发
+### Automatic trigger
 
-如果你自然地说：
-- `我有一个例题库，讲解时优先用它`
-- `先按我的讲义思路来讲`
-- `优先根据 docs/wiki 里的内容解释`
-- `如果例题里有类似题，优先按例题思路讲`
+If you naturally say things like:
+- `I have an example library; prioritize it during explanation`
+- `Explain this following my course notes first`
+- `Prefer the content in docs/wiki when explaining`
+- `If there is a similar example, explain it using the example’s reasoning first`
 
-`project-wiki` 应该把这理解为：
-- 你指定了一个主知识源
-- 你希望讲解优先用这个知识源
-- 你可能还希望沿用这个知识源的讲解方式
+`project-wiki` should understand that as:
+- you specified a primary knowledge source
+- you want explanations to prioritize that source
+- you may also want the explanation style of that source to be followed
 
-### 精准触发
+### Precise trigger
 
-如果你希望更稳定，可以直接明确说：
+If you want more stable behavior, you can say it explicitly:
 
 ```text
-请用 project-wiki 优先基于例题库讲解这道题，并尽量沿用例题中的分析步骤。
+Please use project-wiki to explain this problem primarily based on the example library, and follow the analytical steps from the example as much as possible.
 ```
 
-或者：
+Or:
 
 ```text
-请用 project-wiki，主知识源设为讲义，优先沿用讲义的分析顺序。
+Please use project-wiki with the course notes set as the primary knowledge source, and prioritize the analysis order used in the notes.
 ```
 
-## 示例 Prompts
+## Example Prompts
 
 ```text
-请解释这个项目的核心架构，并指出最关键的 5 个文件或页面证据。
-```
-
-```text
-请比较两种方案，并基于本地项目证据给出推荐，不要只给泛泛最佳实践。
+Please explain the core architecture of this project and identify the 5 most important file or page evidence sources.
 ```
 
 ```text
-请为这个项目设计一个离线优先的 wiki 结构，适合个人先用、团队后续复用。
+Please compare two solutions and recommend one based on local project evidence rather than only generic best practices.
 ```
 
 ```text
-请评估当前模块边界是否合理，并把已验证事实、推断、待确认项分开写。
+Please design an offline-first wiki structure for this project that works for individual use first and later team reuse.
 ```
 
 ```text
-请把当前项目材料整理成新人 30 分钟可上手的知识页骨架。
+Please evaluate whether the current module boundaries are reasonable, and separate verified facts, inferences, and items needing confirmation.
 ```
 
 ```text
-我在做一个讲解题目的系统，我有一个例题库。请用 project-wiki 讲解这道题时优先调用例题库里的知识，并尽量按例题的思路来讲。
+Please organize the current project materials into a knowledge-page skeleton that allows a newcomer to get started within 30 minutes.
 ```
 
 ```text
-请用 project-wiki 优先基于讲义讲解这个概念，不足时再补充一般知识，并把两者区分开。
+I am building a system for explaining problems, and I have an example library. Please use project-wiki to explain this problem by prioritizing knowledge from the example library and following the example’s reasoning style as much as possible.
 ```
 
-## 个人场景怎么用
+```text
+Please use project-wiki to explain this concept primarily based on the course notes, supplementing with general knowledge only when necessary, and keep the two clearly separated.
+```
 
-如果你是一个人维护项目，推荐这样用：
+## How to Use It in a Personal Workflow
 
-1. 先让它解释项目或模块
-2. 再让它做评估 / 对比 / 决策支持
-3. 最后把结论沉淀成 wiki 页面或更新计划
+If you are maintaining a project by yourself, this is a recommended flow:
 
-推荐先建立这几类页面：
+1. first ask it to explain the project or module
+2. then ask it for evaluation / comparison / decision support
+3. finally turn the conclusions into wiki pages or an update plan
+
+Recommended page types to create first:
 - `overview`
 - `module`
 - `glossary`
 - `troubleshooting`
 - `decision`
 
-一句话原则：
-> 先把“理解”沉淀成 page，再把 page 变成长期资产。
+One-line principle:
 
-## 小团队场景怎么用
+> First turn understanding into pages, then turn pages into long-term assets.
 
-如果是 2-8 人的小团队，推荐这样用：
+## How to Use It in a Small-Team Workflow
 
-- 把它当成“共享解释层”，而不是任务管理系统
-- 让同类问题尽量沉淀为稳定页面，而不是反复聊天解释
-- 用它先整理事实、证据、方案和风险，再由人做最终拍板
-- 用它生成 onboarding 页面和 troubleshooting 页面，减少口头传承成本
+For a small team of 2-8 people, the recommended usage is:
 
-project-wiki 支持小团队复用，但 **不** 试图成为：
+- treat it as a “shared explanation layer,” not a task management system
+- accumulate recurring questions into stable pages instead of repeatedly explaining them in chat
+- use it to organize facts, evidence, options, and risks first, then let humans make the final call
+- use it to generate onboarding pages and troubleshooting pages to reduce the cost of oral knowledge transfer
+
+`project-wiki` supports reuse in small teams, but it does **not** try to become:
 - Jira / Linear
-- 多人实时协作平台
-- 企业知识中台
+- a multi-user real-time collaboration platform
+- an enterprise knowledge hub
 
-## 核心设计立场
+## Core Design Position
 
-`project-wiki` 是 **wiki-first**。
+`project-wiki` is **wiki-first**.
 
-这意味着：
-- 主产品是可维护知识层
-- 检索服务于页面创建、页面更新和证据化回答
-- 它不会被设计成“问什么都答”的 repo chatbot
+That means:
+- the main product is a maintainable knowledge layer
+- retrieval serves page creation, page updates, and evidence-backed answers
+- it is not designed to become a repo chatbot that answers everything
 
-## 主文件
+## Main Files
 
-### 核心运行文件
-- `SKILL.md` — 主 skill
-- `references/llm-wiki-core.md` — LLM Wiki 世界观
-- `references/local-rag-engineering.md` — 本地检索 / RAG 工程支持
-- `references/project-assistant-playbook.md` — 解释 / 评估 / 对比 / 决策模式
-- `references/modes-and-safety.md` — local-first 与 online/API-enhanced 边界
-- `references/source-priority-guidance.md` — 指定本地知识源优先讲解与讲解风格复用规则
-- `references/system-integration-guidance.md` — 作为平台能力规范时的系统使用方式
+### Core runtime files
+- `SKILL.md` — main skill
+- `references/llm-wiki-core.md` — the LLM Wiki worldview
+- `references/local-rag-engineering.md` — local retrieval / RAG engineering support
+- `references/project-assistant-playbook.md` — explanation / evaluation / comparison / decision patterns
+- `references/modes-and-safety.md` — boundaries for local-first and online/API-enhanced modes
+- `references/source-priority-guidance.md` — rules for prioritizing specified local knowledge sources and reusing their explanation style
+- `references/system-integration-guidance.md` — how to use it as a platform capability specification
 
-### 维护与质量文件
-- `contracts/*.json` — source policy 与 output contract
-- `references/evidence-and-citation.md` — 轻量证据引用规范
-- `references/wiki-quality-audit.md` — wiki 质量审计规则
-- `references/incremental-update-protocol.md` — 增量更新协议
-- `references/knowledge-lifecycle.md` — 轻量知识生命周期词汇与维护语义
-- `references/output-quality-standards.md` — 输出质量最低标准
-- `references/templates/*.md` — 页面模板
-- `examples/*.md` — 高质量使用样例
-- `scripts/install.mjs` / `scripts/doctor.mjs` — 安装与自检工具
-- `evals/` — 轻量 golden cases 与 rubric
-- `ROADMAP.md` — 路线图
+### Maintenance and quality files
+- `contracts/*.json` — source policy and output contracts
+- `references/evidence-and-citation.md` — lightweight evidence citation guidance
+- `references/wiki-quality-audit.md` — wiki quality audit rules
+- `references/incremental-update-protocol.md` — incremental update protocol
+- `references/knowledge-lifecycle.md` — lightweight knowledge lifecycle vocabulary and maintenance semantics
+- `references/output-quality-standards.md` — minimum output quality standards
+- `references/templates/*.md` — page templates
+- `examples/*.md` — high-quality usage examples
+- `scripts/install.mjs` / `scripts/doctor.mjs` — installation and self-check tools
+- `evals/` — lightweight golden cases and rubrics
+- `ROADMAP.md` — roadmap
 
-## 使用风格
+## Usage Style
 
-这个 skill 被设计成：
-- **personal-first** —— 一个人也能顺手用
-- **small-team friendly** —— 结果可被团队复用
-- **local-first** —— 不依赖在线服务也能成立
-- **evidence-aware** —— 重要结论应能追溯到来源
+This skill is designed to be:
+- **personal-first** — easy for one person to use
+- **small-team friendly** — outputs can be reused by a team
+- **local-first** — viable without depending on online services
+- **evidence-aware** — important conclusions should be traceable to sources
 
 ## License
 

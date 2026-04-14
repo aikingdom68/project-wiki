@@ -15,6 +15,7 @@ const doctorPath = path.join(repoRoot, "scripts", "doctor.mjs");
 const requiredFiles = {
   "SKILL.md": "# skill\n",
   "README.md": "# readme\n",
+  "README.zh-CN.md": "# 说明\n",
   LICENSE: "MIT\n",
   "CHANGELOG.md": "# changelog\n",
   "RELEASE.md": "# release\n",
@@ -109,7 +110,7 @@ const requiredFiles = {
     "# Example: Wiki Lifecycle Update\n\n- review_status\n- consolidation_status\n- supersedes\n",
   "scripts/doctor.mjs": "#!/usr/bin/env node\n",
   "scripts/install.mjs":
-    '#!/usr/bin/env node\nconst whitelist = ["SKILL.md", "README.md", "LICENSE", "CHANGELOG.md", "RELEASE.md", "PUBLISHING.md", "ROADMAP.md", "contracts", "references", "examples", "scripts", "evals"];\n',
+    '#!/usr/bin/env node\nconst whitelist = ["SKILL.md", "README.md", "README.zh-CN.md", "LICENSE", "CHANGELOG.md", "RELEASE.md", "PUBLISHING.md", "ROADMAP.md", "contracts", "references", "examples", "scripts", "evals"];\n',
   "evals/README.md": "# Eval Cases\n\n- lifecycle\n- knowledge-lifecycle\n",
   "evals/cases/source-guided-example-bank.json": JSON.stringify(
     {
@@ -198,6 +199,14 @@ test("doctor fails when knowledge lifecycle reference is missing", () => {
   assert.match(result.stderr, /knowledge-lifecycle/i);
 });
 
+test("doctor fails when the Chinese README is missing", () => {
+  const root = makeFixture();
+  fs.rmSync(path.join(root, "README.zh-CN.md"));
+  const result = runDoctor(root);
+  assert.notEqual(result.status, 0, result.stdout);
+  assert.match(result.stderr, /README\.zh-CN\.md/i);
+});
+
 test("doctor fails when an eval JSON file is malformed", () => {
   const root = makeFixture({
     "evals/cases/wiki-lifecycle-update.json": "{ invalid json }\n",
@@ -259,7 +268,7 @@ test("doctor fails when install whitelist omits lifecycle rollout directories", 
   const result = runDoctor(root);
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(result.stderr, /whitelist/i);
-  assert.match(result.stderr, /references/i);
+  assert.match(result.stderr, /README\.zh-CN\.md|references/i);
 });
 
 test("doctor ignores symlinked directories outside the repo root", () => {

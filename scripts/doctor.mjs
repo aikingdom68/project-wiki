@@ -6,6 +6,7 @@ const root = process.argv[2] ? path.resolve(process.argv[2]) : process.cwd();
 const requiredFiles = [
   "SKILL.md",
   "README.md",
+  "README.zh-CN.md",
   "LICENSE",
   "CHANGELOG.md",
   "RELEASE.md",
@@ -304,6 +305,7 @@ function validateInstallWhitelist() {
   const requiredWhitelistEntries = [
     "SKILL.md",
     "README.md",
+    "README.zh-CN.md",
     "LICENSE",
     "CHANGELOG.md",
     "RELEASE.md",

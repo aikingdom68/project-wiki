@@ -26,6 +26,7 @@ const dst = path.join(home, ".claude", "skills", "project-wiki");
 const whitelist = [
   "SKILL.md",
   "README.md",
+  "README.zh-CN.md",
   "LICENSE",
   "CHANGELOG.md",
   "RELEASE.md",
@@ -70,6 +71,7 @@ function copyRecursive(source, target) {
 
 assertFileExists("SKILL.md");
 assertFileExists("README.md");
+assertFileExists("README.zh-CN.md");
 assertFileExists("LICENSE");
 assertFileExists("CHANGELOG.md");
 assertFileExists("RELEASE.md");
