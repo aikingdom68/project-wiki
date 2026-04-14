@@ -11,3 +11,4 @@
 - update order
 - evidence sources
 - risks if left undocumented
+- lightweight lifecycle rollout notes for the first pages, such as `review_status`, `retention_class`, or `consolidation_status` when they help maintenance

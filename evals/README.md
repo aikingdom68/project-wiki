@@ -8,3 +8,5 @@ This directory contains lightweight golden cases for regression checking.
 - local-first behavior preserved
 - conflicts are not silently flattened
 - beginner prompts still trigger useful behavior
+- lifecycle wording stays lightweight and consistent across docs, examples, and eval cases
+- lifecycle rollout coverage includes `references/knowledge-lifecycle.md`, lifecycle-aware templates/examples, and at least one lifecycle update eval case

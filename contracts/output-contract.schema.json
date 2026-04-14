@@ -41,7 +41,8 @@
           "source": {"type": "string"},
           "section_or_symbol": {"type": "string"},
           "why_it_matters": {"type": "string"}
-        }
+        },
+        "additionalProperties": false
       }
     },
     "source_derived": {
@@ -68,6 +69,37 @@
       "type": "string",
       "enum": ["high", "medium", "low"]
     },
+    "confidence_basis": {
+      "type": "string"
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["draft", "reviewed", "needs_review", "archived"]
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date"
+    },
+    "retention_class": {
+      "type": "string",
+      "enum": ["working", "reference", "historical", "ephemeral"]
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "superseded_by": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "consolidation_status": {
+      "type": "string",
+      "enum": ["raw", "curated", "crystallized"]
+    },
+    "crystallized_from": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
     "comparison_matrix": {
       "type": "array",
       "items": {
@@ -80,7 +112,8 @@
           "maintainability": {"type": "string"},
           "performance": {"type": "string"},
           "evidence": {"type": "array", "items": {"type": "string"}}
-        }
+        },
+        "additionalProperties": false
       }
     },
     "recommendation": {
@@ -97,25 +130,56 @@
   },
   "allOf": [
     {
-      "if": {"properties": {"task_type": {"const": "compare"}}},
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "compare"}}
+      },
       "then": {
         "required": ["comparison_matrix", "recommendation", "assumptions"]
       }
     },
     {
-      "if": {"properties": {"task_type": {"const": "evaluate"}}},
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "evaluate"}}
+      },
       "then": {
         "required": ["recommendation", "assumptions"]
       }
     },
     {
-      "if": {"properties": {"task_type": {"const": "build_wiki"}}},
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "build_wiki"}}
+      },
       "then": {
         "required": ["update_plan"]
       }
     },
     {
-      "if": {"properties": {"task_type": {"const": "source_guided_explain"}}},
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "update_wiki"}}
+      },
+      "then": {
+        "required": ["update_plan"],
+        "anyOf": [
+          {"required": ["review_status"]},
+          {"required": ["last_reviewed"]},
+          {"required": ["retention_class"]},
+          {"required": ["consolidation_status"]},
+          {"required": ["supersedes"]},
+          {"required": ["superseded_by"]},
+          {"required": ["crystallized_from"]},
+          {"required": ["confidence_basis"]}
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "source_guided_explain"}}
+      },
       "then": {
         "required": ["source_derived", "local_supplement", "general_supplement"]
       }

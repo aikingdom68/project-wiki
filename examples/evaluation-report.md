@@ -11,3 +11,4 @@
 - risks or weaknesses tied to evidence
 - confidence not overstated if coverage is incomplete
 - open questions remain visible
+- lifecycle wording stays lightweight when included, for example `review_status`, `last_reviewed`, or `confidence_basis`

@@ -11,6 +11,8 @@ For each page, ask:
 - Does it show open questions when certainty is incomplete?
 - Does it appear stale or contradicted by newer project reality?
 - Is it duplicated elsewhere?
+- If lifecycle fields exist, do review_status, last_reviewed, retention_class, confidence_basis, and consolidation_status still match current evidence?
+- If supersedes or superseded_by exists, are those links still correct and narrow?
 
 ## Typical findings
 
@@ -18,7 +20,7 @@ For each page, ask:
 A strong statement with weak or missing evidence.
 
 ### Stale section
-A section likely outdated relative to current project structure.
+A section likely outdated relative to current project structure or overdue for review relative to its stated lifecycle.
 
 ### Conflict
 Two pages or sources disagree in a meaningful way.
@@ -36,4 +38,5 @@ A page that reads like a summary but is not maintainable knowledge.
 - stale sections
 - conflicts
 - missing pages
+- lifecycle mismatches
 - recommended update order

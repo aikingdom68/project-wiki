@@ -1,0 +1,11 @@
+{
+  "id": "wiki-lifecycle-update",
+  "prompt": "请根据新证据更新这个项目 wiki，并只补充必要的生命周期说明，避免写成重流程系统。",
+  "checks": [
+    "identifies impacted page types or target files",
+    "ties the update to explicit local evidence",
+    "uses lightweight lifecycle markers such as review_status or consolidation_status only when helpful",
+    "keeps supersession or retention notes narrow and justified",
+    "preserves an incremental update posture instead of broad rewrites"
+  ]
+}

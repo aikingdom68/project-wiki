@@ -5,6 +5,7 @@
     "separates verified facts and synthesis",
     "includes evidence-backed risks or weaknesses",
     "does not overstate confidence when evidence is incomplete",
-    "keeps open questions visible"
+    "keeps open questions visible",
+    "uses lifecycle wording lightly when review state or confidence basis matters"
   ]
 }

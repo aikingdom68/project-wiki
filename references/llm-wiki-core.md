@@ -62,6 +62,7 @@ Rules:
 - pages must be maintainable
 - pages must link back to evidence
 - pages should be incrementally updatable
+- pages may carry lightweight lifecycle fields such as review_status, last_reviewed, retention_class, consolidation_status, and supersession links when those fields improve maintenance clarity
 
 ### 3. Schema layer
 

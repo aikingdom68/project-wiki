@@ -10,6 +10,7 @@ All high-value outputs should:
 - expose meaningful gaps rather than smoothing them over
 - avoid generic advice when local constraints matter
 - remain reusable as pages, plans, or structured project knowledge
+- use lifecycle fields only when they clarify maintenance state, confidence basis, retention, consolidation, or supersession
 
 ## Quality thresholds by output type
 
@@ -42,6 +43,7 @@ Minimum quality:
 - must name page types or target files
 - must identify evidence sources
 - must state why the proposed pages are high value
+- should note lifecycle implications when relevant, such as review_status, retention_class, consolidation_status, or supersession
 
 ## Source-guided explanation quality
 When explanation is guided by a preferred local source:

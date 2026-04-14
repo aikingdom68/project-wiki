@@ -24,6 +24,7 @@ The core worldview is:
 - **LLM Wiki is the skeleton** — stable project knowledge pages, not one-off answers.
 - **Local RAG is the evidence layer** — retrieval supports pages and judgments, but does not replace them.
 - **Project assistance is the product goal** — explanations, comparisons, decision memos, onboarding, and knowledge updates.
+- **Lifecycle fields are support metadata** — they clarify review state, retention, consolidation, and supersession without changing the wiki-first/local-first posture.
 
 ## When to Use
 
@@ -229,6 +230,8 @@ Priority rule:
 2. other local project sources
 3. external or general knowledge only if still needed
 
+If a source policy is being recorded, lightweight hints such as `review_cadence` or `supersession_rule` may be added to clarify maintenance expectations.
+
 ### 5. Retrieve evidence with the right strategy
 
 Use the lightest strategy that is sufficient:
@@ -278,19 +281,20 @@ When writing is authorized:
 - follow the project's existing docs/wiki structure if one already exists
 - if no wiki structure exists, propose the layout before creating files
 - preserve evidence links and change rationale
+- update lightweight lifecycle fields when they materially improve maintenance clarity
 - avoid broad rewrites when a narrow incremental update is enough
 
 ## Recommended MVP Wiki Layout
 
 If the project does not already define its own wiki structure, prefer a small default layout such as:
 
-- `docs/wiki/index.md`
-- `docs/wiki/overview.md`
-- `docs/wiki/modules/<name>.md`
-- `docs/wiki/decisions/<date>-<slug>.md`
-- `docs/wiki/glossary.md`
-- `docs/wiki/troubleshooting.md`
-- `docs/wiki/change-log.md`
+- docs/wiki/index.md (example target path)
+- docs/wiki/overview.md (example target path)
+- docs/wiki/modules/<name>.md (example target path)
+- docs/wiki/decisions/<date>-<slug>.md (example target path)
+- docs/wiki/glossary.md (example target path)
+- docs/wiki/troubleshooting.md (example target path)
+- docs/wiki/change-log.md (example target path)
 
 Each MVP page should try to include:
 - **Scope**
@@ -299,6 +303,15 @@ Each MVP page should try to include:
 - **Evidence**
 - **Open questions**
 - **Last updated**
+
+When useful, pages may also carry lightweight lifecycle fields such as:
+- **Review status**
+- **Last reviewed**
+- **Retention class**
+- **Confidence basis**
+- **Supersedes / Superseded by**
+- **Consolidation status**
+- **Crystallized from**
 
 ## Knowledge Objects
 
@@ -431,6 +444,20 @@ Use this decision ladder:
 
 ## Output Contracts
 
+### Page labels and contract keys
+
+Use page-friendly labels in templates and prose, but map them to the exact output contract keys when recording structured data:
+
+- `Review status` -> `review_status`
+- `Last reviewed` -> `last_reviewed`
+- `Retention class` -> `retention_class`
+- `Confidence basis` -> `confidence_basis`
+- `Supersedes` / `Superseded by` -> `supersedes` / `superseded_by`
+- `Consolidation status` -> `consolidation_status`
+- `Crystallized from` -> `crystallized_from`
+
+Only include these lifecycle keys when they materially improve maintenance clarity.
+
 ### 1. Project Explanation Report
 
 Use this when explaining a project, module, or system.
@@ -494,6 +521,8 @@ Required sections:
 - **Suggested update order**
 - **Risks if left undocumented**
 
+For lifecycle-sensitive update work, `update_wiki` outputs should include `update_plan` plus at least one lightweight lifecycle key such as `review_status`, `last_reviewed`, `retention_class`, `consolidation_status`, `supersedes`, `superseded_by`, `crystallized_from`, or `confidence_basis`.
+
 ## Quality Gates
 
 Before treating an output as solid:
@@ -532,6 +561,8 @@ Read these files when needed:
   - Read when auditing page quality, stale knowledge, conflicts, or unsupported claims.
 - `references/incremental-update-protocol.md`
   - Read when planning narrow, traceable updates instead of broad rewrites.
+- `references/knowledge-lifecycle.md`
+  - Read when deciding how to express review state, retention, consolidation, confidence basis, or supersession without adding heavy workflow language.
 - `references/output-quality-standards.md`
   - Read when checking whether explanation, evaluation, comparison, decision, or update outputs meet the minimum quality bar.
 

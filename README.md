@@ -148,6 +148,7 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 更完整的说明见：
 - `references/source-priority-guidance.md`
 - `references/system-integration-guidance.md`
+- `references/knowledge-lifecycle.md`
 
 ## 什么时候用
 
@@ -171,6 +172,20 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 - **普通 RAG**：重点是“召回答案”
 - **Repo Chat**：重点是“随问随答”
 - **project-wiki**：重点是“把项目知识沉淀成稳定页面，并让检索服务这些页面”
+
+## 页面标签与 contract key 对照
+
+为了让页面模板、示例和 contracts 使用同一套轻量生命周期词汇，建议按下面的映射理解：
+
+- `Review status` -> `review_status`
+- `Last reviewed` -> `last_reviewed`
+- `Retention class` -> `retention_class`
+- `Confidence basis` -> `confidence_basis`
+- `Supersedes` / `Superseded by` -> `supersedes` / `superseded_by`
+- `Consolidation status` -> `consolidation_status`
+- `Crystallized from` -> `crystallized_from`
+
+这些字段只在它们能改善维护清晰度时使用，不要求每一页都写满。
 
 ## 小白三句法
 
@@ -416,6 +431,7 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 - `references/evidence-and-citation.md` — 轻量证据引用规范
 - `references/wiki-quality-audit.md` — wiki 质量审计规则
 - `references/incremental-update-protocol.md` — 增量更新协议
+- `references/knowledge-lifecycle.md` — 轻量知识生命周期词汇与维护语义
 - `references/output-quality-standards.md` — 输出质量最低标准
 - `references/templates/*.md` — 页面模板
 - `examples/*.md` — 高质量使用样例

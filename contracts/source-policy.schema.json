@@ -40,6 +40,10 @@
       "type": "string",
       "enum": ["live", "current", "stale_possible", "historical"]
     },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date"
+    },
     "style_following_allowed": {
       "type": "boolean"
     },
@@ -49,8 +53,17 @@
     "conflict_resolution_rule": {
       "type": "string"
     },
+    "review_cadence": {
+      "type": "string",
+      "description": "Lightweight review expectation such as 'per release', 'monthly', or 'when boundaries change'."
+    },
+    "supersession_rule": {
+      "type": "string",
+      "description": "Narrow rule for when this source should replace or be replaced by another source or page."
+    },
     "notes": {
       "type": "string"
     }
-  }
+  },
+  "additionalProperties": false
 }
