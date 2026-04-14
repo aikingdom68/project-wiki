@@ -167,11 +167,39 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 - 只需要普通搜索，而不需要项目知识结构
 - 做外部市场研究，而不是整理项目本地知识
 
-## 它和普通 RAG / Repo Chat 的区别
+## 差异化优势 / Competitive Advantages
 
-- **普通 RAG**：重点是“召回答案”
-- **Repo Chat**：重点是“随问随答”
-- **project-wiki**：重点是“把项目知识沉淀成稳定页面，并让检索服务这些页面”
+语言切换 / Language switch: [中文](#competitive-advantages-zh) | [English](#competitive-advantages-en)
+
+<a id="competitive-advantages-zh"></a>
+
+### 中文
+
+- **相对纯 RAG**：纯 RAG 的重点通常是“找回相关片段并回答当前问题”；`project-wiki` 的重点是把高价值理解沉淀成稳定页面，让知识随着使用持续累积，而不是每次重新召回、重新生成。
+- **相对 Repo Chat / 代码库问答**：Repo Chat 更偏即时问答；`project-wiki` 更强调证据、页面结构、缺口、决策上下文和更新路径，适合项目解释、设计评估、方案对比、onboarding 与 troubleshooting 沉淀。
+- **相对静态 wiki / 普通文档库**：传统文档更擅长“存放内容”；`project-wiki` 更强调 source priority、事实与推断分离、显式冲突处理，以及围绕项目工作来持续更新知识层，而不只是堆文档。
+- **相对通用 AI 记忆 / 笔记产品**：通用产品往往偏个人记录或自由检索；`project-wiki` 更强调项目语境、主知识源优先级，以及在本地证据不足时才谨慎回退到一般知识。
+- **相对云端优先 / 外部索引优先产品**：很多产品默认把内容发到外部索引或在线服务；`project-wiki` 默认是 **local-first**，更适合私有仓库、敏感材料和离线优先流程。
+- **相对一次性总结工具**：一次性总结更容易过期；`project-wiki` 现在还支持轻量生命周期语义，例如 `review_status`、`supersedes`、`retention_class`、`consolidation_status`，更适合长期维护。
+
+一句话总结：
+
+> 纯 RAG 更像“把片段找回来”，Repo Chat 更像“现在问、现在答”，而 `project-wiki` 更像“把项目知识整理成长期可维护、可验证、可复用的工作层”。
+
+<a id="competitive-advantages-en"></a>
+
+### English
+
+- **Compared with pure RAG**: pure RAG usually optimizes for retrieving relevant chunks and answering the question of the moment; `project-wiki` optimizes for compiling durable project pages so knowledge compounds instead of being re-retrieved and re-generated every time.
+- **Compared with Repo Chat / repository Q&A**: Repo Chat is usually optimized for interactive Q&A; `project-wiki` emphasizes evidence, page structure, known gaps, decision context, and update paths, which makes it better suited for project explanation, evaluation, trade-off analysis, onboarding, and troubleshooting capture.
+- **Compared with static wikis or generic doc repositories**: traditional documentation tools are good at storing content; `project-wiki` adds source priority, fact-vs-synthesis separation, explicit conflict handling, and a workflow for continuously improving project knowledge instead of merely accumulating documents.
+- **Compared with generic AI memory or note-taking products**: generic products often optimize for personal capture or freeform retrieval; `project-wiki` is more opinionated about project context, preferred local knowledge sources, and only falling back to general knowledge when local evidence is insufficient.
+- **Compared with cloud-first or external-index-first products**: many products assume content will be uploaded to external services or remote indexes; `project-wiki` is **local-first** by default, which is a better fit for private repositories, sensitive materials, and offline-oriented workflows.
+- **Compared with one-off summary tools**: one-off summaries go stale quickly; `project-wiki` now also supports lightweight lifecycle semantics such as `review_status`, `supersedes`, `retention_class`, and `consolidation_status`, making it more suitable for long-lived maintenance.
+
+One-line summary:
+
+> Pure RAG is about "retrieve the right chunk," Repo Chat is about "ask now, answer now," and `project-wiki` is about turning project knowledge into a durable, evidence-backed, reusable working layer.
 
 ## 页面标签与 contract key 对照
 
