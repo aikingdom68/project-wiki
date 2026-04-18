@@ -24,6 +24,10 @@ Why this page exists and when someone should read it.
 
 - 
 
+## Related Pages
+
+- [[page-slug]] — why this page is related
+
 ## Lifecycle
 
 Use lightweight lifecycle notes only when they improve maintenance clarity.

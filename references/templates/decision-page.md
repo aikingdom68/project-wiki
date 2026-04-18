@@ -28,6 +28,10 @@ What led to this decision.
 
 - 
 
+## Related Pages
+
+- [[page-slug]] — why this page is related
+
 ## Lifecycle
 
 Keep lifecycle notes short and decision-focused.

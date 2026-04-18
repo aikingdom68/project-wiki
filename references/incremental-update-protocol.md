@@ -29,6 +29,35 @@ A good incremental update should record:
 - whether review_status, last_reviewed, or consolidation_status should change
 - whether the update supersedes an older page, note, or conclusion
 
+## Operation log (`log.md`)
+
+Every knowledge base mutation must be recorded in `docs/wiki/log.md` as an append-only log.
+
+### Log entry format
+
+```markdown
+## YYYY-MM-DD HH:MM — <action>
+
+- **Action**: created | updated | deleted | renamed | superseded
+- **Pages affected**: [[page-slug-1]], [[page-slug-2]]
+- **Reason**: brief explanation of why this change happened
+- **Evidence**: what triggered the update (file path, user request, audit finding)
+```
+
+### Rules
+
+- Never edit or delete existing log entries
+- Always append new entries at the top of the file
+- Keep each entry concise (3-6 lines)
+- Use wiki-link syntax for page references so the log is navigable
+
+### Why the log matters
+
+- Provides a readable audit trail for knowledge base changes
+- Helps identify when and why a page drifted from project reality
+- Supports SaaS features like "show recent knowledge base changes"
+- Enables rollback decisions when an update introduces errors
+
 ## Lightweight lifecycle handling
 
 When an update materially changes the knowledge layer:

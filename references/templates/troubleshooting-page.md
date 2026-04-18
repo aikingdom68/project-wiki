@@ -24,6 +24,10 @@ What problem family this page covers.
 
 - 
 
+## Related Pages
+
+- [[page-slug]] — why this page is related
+
 ## Lifecycle
 
 Troubleshooting pages often benefit from review and supersession notes when fixes drift.

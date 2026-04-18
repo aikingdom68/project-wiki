@@ -102,15 +102,39 @@ Periodically inspect the knowledge layer for:
 - weak evidence density
 - pages that no longer match project reality
 
+## SCHEMA.md
+
+Every wiki should have a `SCHEMA.md` at its root that anchors the wiki for both human readers and automated tools.
+
+It should record:
+- wiki root path (so tools know where to find pages)
+- page naming convention
+- link syntax (`[[slug]]` wiki-links)
+- page types in use
+- lifecycle field defaults
+
+For SaaS contexts, `SCHEMA.md` is the entry point that the retrieval layer reads first to understand the knowledge base structure.
+
 ## Index and log
 
 A wiki becomes more usable when it has:
 
-### `index`
-A navigational layer showing what pages exist and how to enter the knowledge space.
+### `index.md`
+A navigational catalog listing every page with a one-line summary and optional tags.
 
-### `log`
-A maintenance trail showing what changed, what was updated, and why.
+Rules:
+- one line per page
+- update whenever pages are created, renamed, or deleted
+- supports lightweight retrieval: scan the index first to find candidate pages before reading full content
+
+### `log.md`
+An append-only operation log showing what changed, when, and why.
+
+Rules:
+- never edit or delete existing entries
+- append new entries at the top
+- use `[[slug]]` wiki-links for page references
+- see `references/incremental-update-protocol.md` for the entry format
 
 For a project-oriented wiki, this does not need to be heavy. The important thing is that change is legible.
 

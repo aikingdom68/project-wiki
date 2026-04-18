@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project Wiki Retrieval Contract",
+  "description": "Defines the request and response shape for knowledge base retrieval in SaaS and API contexts.",
+  "definitions": {
+    "retrieval_request": {
+      "type": "object",
+      "required": ["query", "retrieval_mode"],
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The user question or search intent."
+        },
+        "source_filter": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Restrict retrieval to specific source collections. Examples: knowledge_base, docs, examples, decisions."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 10,
+          "description": "Maximum number of retrieval hits to return."
+        },
+        "retrieval_mode": {
+          "type": "string",
+          "enum": ["direct", "lexical", "semantic", "hybrid"],
+          "description": "Direct: read known files. Lexical: exact keyword match. Semantic: intent-based similarity. Hybrid: lexical + semantic + rerank."
+        },
+        "include_parent_context": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, expand each hit to include its parent section or file context."
+        },
+        "locale": {
+          "type": "string",
+          "description": "Preferred language for results when the knowledge base is multilingual."
+        },
+        "snapshot_id": {
+          "type": "string",
+          "description": "Optional knowledge base snapshot version. When omitted, use the latest version."
+        }
+      },
+      "additionalProperties": false
+    },
+    "retrieval_hit": {
+      "type": "object",
+      "required": ["chunk_id", "content", "source_path", "relevance_score"],
+      "properties": {
+        "chunk_id": {
+          "type": "string",
+          "description": "Unique identifier for this retrieval unit."
+        },
+        "content": {
+          "type": "string",
+          "description": "The matched text content."
+        },
+        "source_path": {
+          "type": "string",
+          "description": "File path or knowledge base path of the source document."
+        },
+        "section_path": {
+          "type": "string",
+          "description": "Hierarchical path within the document. Example: 'Authentication > Session Management > Refresh Strategy'."
+        },
+        "relevance_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Relevance score between 0 and 1."
+        },
+        "parent_context": {
+          "type": "string",
+          "description": "Larger surrounding context when include_parent_context is true."
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "doc_type": {
+              "type": "string",
+              "enum": ["overview", "module", "decision", "glossary", "troubleshooting", "example", "raw", "other"]
+            },
+            "last_updated": {
+              "type": "string",
+              "format": "date"
+            },
+            "retention_class": {
+              "type": "string",
+              "enum": ["working", "reference", "historical", "ephemeral"]
+            },
+            "review_status": {
+              "type": "string",
+              "enum": ["draft", "reviewed", "needs_review", "archived"]
+            },
+            "tags": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "language": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "retrieval_response": {
+      "type": "object",
+      "required": ["hits", "coverage_assessment"],
+      "properties": {
+        "hits": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/retrieval_hit"}
+        },
+        "coverage_assessment": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "none"],
+          "description": "How well the knowledge base covers the query. High: strong evidence found. Medium: partial coverage. Low: weak or tangential hits. None: no relevant results."
+        },
+        "fallback_needed": {
+          "type": "boolean",
+          "description": "True when knowledge base coverage is insufficient and external/LLM knowledge should supplement."
+        },
+        "fallback_reason": {
+          "type": "string",
+          "description": "Why fallback is needed. Only present when fallback_needed is true."
+        },
+        "snapshot_id": {
+          "type": "string",
+          "description": "The knowledge base snapshot version used for this retrieval."
+        },
+        "retrieval_mode_used": {
+          "type": "string",
+          "enum": ["direct", "lexical", "semantic", "hybrid"],
+          "description": "The actual retrieval mode applied."
+        },
+        "total_candidates": {
+          "type": "integer",
+          "description": "Total number of candidate hits before filtering and ranking."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "request": {"$ref": "#/definitions/retrieval_request"},
+    "response": {"$ref": "#/definitions/retrieval_response"}
+  }
+}

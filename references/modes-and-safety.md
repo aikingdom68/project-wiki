@@ -106,6 +106,56 @@ Bad behavior:
 - mixing external advice into local conclusions with no label
 - answering beyond the available project evidence without warning
 
+## Offline capability boundary for SaaS
+
+When Project Wiki is embedded in a SaaS product, offline mode has concrete capability boundaries that the product and its users must understand.
+
+### Offline: fully available
+
+These capabilities work without any network or AI API:
+- knowledge base full-text search and retrieval
+- existing wiki page display and navigation
+- structured citation and evidence linking
+- backlink traversal and related page discovery
+- query answering based on indexed knowledge base content
+- wiki page browsing via index.md
+
+### Offline: partially available
+
+These capabilities may work with reduced quality:
+- synthesis across multiple knowledge base pages (depends on local compute)
+- comparison and evaluation outputs (may be less fluent without LLM generation)
+- new page drafting from existing materials (depends on local tooling)
+
+### Offline: unavailable
+
+These capabilities require network or AI API access:
+- generating new knowledge beyond what exists in the knowledge base
+- real-time AI reasoning, summarization, and analysis
+- external fact verification
+- enriching knowledge base with web-sourced information
+- LLM-powered natural language query understanding (unless a local model is available)
+
+### Offline UI contract
+
+When a SaaS product operates in offline mode, the frontend must:
+- display an offline indicator visibly
+- label every answer as "based on local knowledge base"
+- show coverage status: how many sources matched the query
+- when coverage is insufficient, state it clearly instead of giving a vague answer
+- never present LLM-generated text as knowledge-base-sourced text
+- offer to queue the query for re-answering when the connection is restored
+
+### Graceful degradation sequence
+
+When connection drops during a session:
+
+1. Switch to offline retrieval immediately
+2. Inform the user that answers are now knowledge-base-only
+3. Continue serving retrieval-backed answers with citations
+4. Queue any queries that need AI synthesis for later
+5. When connection restores, re-process queued queries and notify the user
+
 ## Bottom line
 
 Project Wiki should be useful under ideal conditions and still trustworthy under degraded conditions.

@@ -31,6 +31,18 @@ A high-value project topic with no durable page yet.
 ### Weak page
 A page that reads like a summary but is not maintainable knowledge.
 
+### Broken link
+A `[[slug]]` reference that does not resolve to an existing page.
+
+### Orphan page
+A page with zero incoming `[[slug]]` links from other pages.
+
+### Missing index entry
+A page that exists as a file but is not listed in `index.md`.
+
+### Stale log
+The operation log (`log.md`) has not been updated after recent wiki changes.
+
 ## Suggested output
 
 - page health
@@ -39,4 +51,8 @@ A page that reads like a summary but is not maintainable knowledge.
 - conflicts
 - missing pages
 - lifecycle mismatches
+- broken links
+- orphan pages
+- missing index entries
+- stale operation log
 - recommended update order

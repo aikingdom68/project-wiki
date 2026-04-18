@@ -161,12 +161,38 @@ If Project Wiki is used inside a product, the product should treat it as a polic
 - page-oriented knowledge organization
 - evidence-backed explanation
 - transparent distinction between fact, synthesis, and supplement
+- structured retrieval with coverage assessment
+- offline-capable knowledge delivery
 
 It should **not** be reduced to:
 - just a prompt template
 - just a retrieval chain
 - just a vector search wrapper
 - just a generic explanation generator
+
+## SaaS integration contracts
+
+When embedding Project Wiki into a SaaS product, use these contracts as the integration surface:
+
+### Retrieval layer
+Use `contracts/retrieval-contract.schema.json` for the knowledge base search interface. This defines:
+- request shape: query, source filters, retrieval mode, snapshot version
+- response shape: hits with metadata, coverage assessment, fallback signal
+
+### Output layer
+Use `contracts/output-contract.schema.json` for structured responses. This defines:
+- task-type-specific required fields
+- citation objects for API responses
+- lifecycle metadata for knowledge management
+
+### Source policy layer
+Use `contracts/source-policy.schema.json` for configuring source prioritization per tenant or project.
+
+### Offline behavior
+See `references/modes-and-safety.md` → "Offline capability boundary for SaaS" for the offline/online degradation contract.
+
+### Cold start
+See `references/cold-start-protocol.md` for bootstrapping a new SaaS instance from zero.
 
 ## Product-level design heuristic
 
@@ -177,5 +203,7 @@ When building with Project Wiki principles, ask:
 3. What is the correct fallback order?
 4. How should explanation preserve source style?
 5. How will outputs stay transparent about where reasoning came from?
+6. What happens when the AI API is unavailable?
+7. How are citations rendered in the frontend?
 
-If a system cannot answer those five questions, it is probably not really using Project Wiki — it is just using retrieval.
+If a system cannot answer those questions, it is probably not really using Project Wiki — it is just using retrieval.

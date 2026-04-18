@@ -20,7 +20,8 @@
         "decide",
         "build_wiki",
         "update_wiki",
-        "source_guided_explain"
+        "source_guided_explain",
+        "query"
       ]
     },
     "verified_facts": {
@@ -126,6 +127,27 @@
     "update_plan": {
       "type": "array",
       "items": {"type": "string"}
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "anchor_text", "source_path", "confidence"],
+        "properties": {
+          "id": {"type": "string"},
+          "anchor_text": {"type": "string"},
+          "source_id": {"type": "string"},
+          "source_title": {"type": "string"},
+          "source_path": {"type": "string"},
+          "section_path": {"type": "string"},
+          "snippet": {"type": "string"},
+          "confidence": {
+            "type": "string",
+            "enum": ["verified_fact", "synthesis", "open_question"]
+          }
+        },
+        "additionalProperties": false
+      }
     }
   },
   "allOf": [
@@ -182,6 +204,15 @@
       },
       "then": {
         "required": ["source_derived", "local_supplement", "general_supplement"]
+      }
+    },
+    {
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "query"}}
+      },
+      "then": {
+        "required": ["citations"]
       }
     }
   ]

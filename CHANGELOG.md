@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-04-18
+
+### Added
+- Retrieval contract schema (`contracts/retrieval-contract.schema.json`) for SaaS and API contexts
+- Wiki linking reference (`references/wiki-linking.md`) with `[[slug]]` syntax, backlinks, and orphan detection
+- Cold start protocol (`references/cold-start-protocol.md`) for bootstrapping knowledge bases from zero
+- SCHEMA.md template (`references/templates/schema-page.md`) for anchoring wiki conventions
+- `query` internal task mode for read-only knowledge-base-backed question answering
+- API-facing citation format in `references/evidence-and-citation.md`
+- Offline capability boundary for SaaS in `references/modes-and-safety.md`
+- Version snapshot support in `references/knowledge-lifecycle.md`
+- Operation log (`log.md`) specification in `references/incremental-update-protocol.md`
+- `index.md` catalog specification and `SCHEMA.md` convention in MVP Wiki Layout
+- Related Pages section (`[[slug]]` links) in all page templates
+- `citations` field and `query` task type in output contract schema
+- Broken link, orphan page, and stale log checks in wiki quality audit
+- New common mistakes: missing cross-references and missing SaaS citations
+
+### Changed
+- MVP Wiki Layout expanded with SCHEMA.md, index.md, log.md, _backlinks.json, _snapshots.json
+- LLM Wiki Core reference updated with SCHEMA.md, index.md, and log.md specifications
+- Doctor script updated to validate new files
+
 ## [0.3.3] - 2026-04-09
 
 ### Added

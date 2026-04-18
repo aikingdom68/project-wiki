@@ -1,6 +1,6 @@
 ---
 name: project-wiki
-version: 0.3.2
+version: 0.4.0
 author: KimYx0207
 user-invocable: true
 trigger: "项目解释|项目评估|方案对比|技术选型|决策支持|知识库|项目知识库|项目wiki|wiki更新|模块说明|架构说明|新成员上手|ADR|项目文档整理|代码库理解|本地RAG|离线知识库|LLM Wiki|project explanation|project evaluation|decision support|knowledge base|project wiki|architecture explanation|module explanation|trade-off analysis|local rag|llm wiki"
@@ -288,13 +288,48 @@ When writing is authorized:
 
 If the project does not already define its own wiki structure, prefer a small default layout such as:
 
-- docs/wiki/index.md (example target path)
-- docs/wiki/overview.md (example target path)
-- docs/wiki/modules/<name>.md (example target path)
-- docs/wiki/decisions/<date>-<slug>.md (example target path)
-- docs/wiki/glossary.md (example target path)
-- docs/wiki/troubleshooting.md (example target path)
-- docs/wiki/change-log.md (example target path)
+- docs/wiki/SCHEMA.md (wiki conventions and root path anchor)
+- docs/wiki/index.md (page catalog with one-line summaries)
+- docs/wiki/log.md (append-only operation log)
+- docs/wiki/overview.md (project overview)
+- docs/wiki/modules/<name>.md (module pages)
+- docs/wiki/decisions/<date>-<slug>.md (decision records)
+- docs/wiki/glossary.md (terminology)
+- docs/wiki/troubleshooting.md (common problems and fixes)
+- docs/wiki/_backlinks.json (reverse link index, optional for SaaS)
+- docs/wiki/_snapshots.json (version snapshots, optional for SaaS)
+
+### `SCHEMA.md`
+
+Every wiki should have a `SCHEMA.md` at its root that records:
+- wiki root path
+- page naming convention (lowercase, hyphen-separated slugs)
+- link syntax (`[[slug]]` wiki-links for cross-references)
+- evidence citation format
+- lifecycle field usage rules
+- page types in use
+
+### `index.md`
+
+The index is a navigable catalog of all wiki pages:
+
+```markdown
+# Wiki Index
+
+- [Project Overview](overview.md) — what this project is and why it exists | tags: core
+- [Auth Session](modules/auth-session.md) — session validation and refresh flow | tags: auth, module
+- [Cache Strategy Decision](decisions/2026-04-01-cache-strategy.md) — ADR for cache invalidation approach | tags: decision, cache
+```
+
+Rules:
+- one line per page
+- include a short summary and tags
+- keep alphabetically or by page type
+- update the index whenever a page is created, renamed, or deleted
+
+### `log.md`
+
+An append-only operation log recording every knowledge base mutation. See `references/incremental-update-protocol.md` for the entry format.
 
 Each MVP page should try to include:
 - **Scope**
@@ -302,6 +337,7 @@ Each MVP page should try to include:
 - **Synthesis**
 - **Evidence**
 - **Open questions**
+- **Related Pages** (using `[[slug]]` wiki-link syntax)
 - **Last updated**
 
 When useful, pages may also carry lightweight lifecycle fields such as:
@@ -406,6 +442,21 @@ Expected behavior:
 - improve links between pages
 - reduce duplication
 - keep the wiki readable, updateable, and reusable
+
+### `query`
+Use when the user asks a question that should be answered from the knowledge base.
+
+Expected behavior:
+- always read the wiki layer first, never answer from memory alone
+- search the index to identify candidate pages
+- read relevant pages and gather evidence
+- synthesize an answer with citations pointing to specific pages and sections
+- distinguish knowledge-base-sourced reasoning from supplemental reasoning
+- when coverage is insufficient, state the gap explicitly before falling back
+- offer to save a valuable answer as a new wiki page or section
+- this mode is read-only — it does not modify the wiki
+
+For SaaS contexts, query mode is the primary retrieval-and-answer path. Responses must follow the API citation format defined in `references/evidence-and-citation.md`.
 
 ### `evolve`
 Use when findings should change the durable knowledge layer.
@@ -554,17 +605,31 @@ Read these files when needed:
 - `references/system-integration-guidance.md`
   - Read when using Project Wiki as a capability specification inside a future product or platform.
 
+### Structure and linking guidance
+- `references/wiki-linking.md`
+  - Read when creating cross-references between wiki pages, setting up backlink indexes, or validating link integrity.
+- `references/cold-start-protocol.md`
+  - Read when bootstrapping a knowledge base from zero, especially for SaaS deployments.
+
 ### Maintenance and quality guidance
 - `references/evidence-and-citation.md`
-  - Read when outputs need a consistent evidence-backed format.
+  - Read when outputs need a consistent evidence-backed format, or when designing API-facing citation structures for SaaS.
 - `references/wiki-quality-audit.md`
   - Read when auditing page quality, stale knowledge, conflicts, or unsupported claims.
 - `references/incremental-update-protocol.md`
-  - Read when planning narrow, traceable updates instead of broad rewrites.
+  - Read when planning narrow, traceable updates instead of broad rewrites, or when maintaining the operation log.
 - `references/knowledge-lifecycle.md`
-  - Read when deciding how to express review state, retention, consolidation, confidence basis, or supersession without adding heavy workflow language.
+  - Read when deciding how to express review state, retention, consolidation, confidence basis, supersession, or version snapshots.
 - `references/output-quality-standards.md`
   - Read when checking whether explanation, evaluation, comparison, decision, or update outputs meet the minimum quality bar.
+
+### Contracts
+- `contracts/output-contract.schema.json`
+  - The structural contract for all Project Wiki outputs by task type.
+- `contracts/source-policy.schema.json`
+  - The structural contract for source policies.
+- `contracts/retrieval-contract.schema.json`
+  - The structural contract for knowledge base retrieval requests and responses in SaaS and API contexts.
 
 ### Reusable templates
 - `references/templates/*.md`
@@ -657,6 +722,30 @@ Symptom:
 Fix:
 - keep MVP personal-first and structure-first
 - support small-team reuse through readable pages and evidence trails
+
+### Mistake 6: Writing wiki pages with no cross-references
+
+Symptom:
+- pages exist in isolation with no `[[wikilinks]]` connecting them
+- no Related Pages section
+- no backlink index
+
+Fix:
+- every page should link to at least one related page using `[[slug]]` syntax
+- include a Related Pages section before the Lifecycle section
+- rebuild the backlink index after creating or updating pages
+
+### Mistake 7: Serving knowledge base answers without citations in SaaS
+
+Symptom:
+- API returns a fluent answer with no citation objects
+- frontend cannot show where the answer came from
+- user cannot verify claims against source material
+
+Fix:
+- every knowledge-base-sourced claim must carry a citation object
+- use the API-facing citation format from `references/evidence-and-citation.md`
+- clearly separate knowledge-base-sourced text from LLM-supplemented text
 
 ## MVP Boundary
 

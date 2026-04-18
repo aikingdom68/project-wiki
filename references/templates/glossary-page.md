@@ -15,6 +15,10 @@ Which terminology this glossary covers.
 
 - 
 
+## Related Pages
+
+- [[page-slug]] — why this page is related
+
 ## Lifecycle
 
 Glossary pages usually need only a small lifecycle note.

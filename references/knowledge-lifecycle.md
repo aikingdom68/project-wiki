@@ -90,6 +90,51 @@ Update lifecycle metadata when:
 - a temporary note is consolidated into a durable page
 - a previously reliable page becomes stale enough to require review
 
+## Version snapshots (SaaS context)
+
+When the knowledge base is embedded in a SaaS product, version snapshots support traceability and historical queries.
+
+### What a snapshot captures
+
+A snapshot is a point-in-time record of the knowledge base state:
+- snapshot ID (format: `snap-YYYYMMDD-HHMMSS` or auto-generated hash)
+- creation timestamp
+- page manifest: which pages existed and their review_status at that moment
+- reason for snapshot (manual trigger, scheduled, or pre-release)
+
+### When to create snapshots
+
+- before a major knowledge base restructuring
+- before a product release that depends on specific knowledge state
+- on a regular schedule (weekly or monthly, depending on update frequency)
+- when the user explicitly requests a checkpoint
+
+### Snapshot metadata file
+
+Store snapshot metadata at `docs/wiki/_snapshots.json`:
+
+```json
+[
+  {
+    "snapshot_id": "snap-20260418-120000",
+    "created_at": "2026-04-18T12:00:00Z",
+    "reason": "pre-release checkpoint",
+    "page_count": 23,
+    "pages": ["overview", "auth-session", "adr-0003-cache-strategy"]
+  }
+]
+```
+
+### Using snapshots
+
+- Retrieval requests may include an optional `snapshot_id` to query a historical state
+- Answers based on a non-current snapshot must be labeled as historical
+- The product frontend should show which snapshot version an answer is based on
+
+### Snapshot is not a full backup
+
+Snapshots record the knowledge base metadata and page list, not necessarily full file copies. Full backup is a product infrastructure concern, not a wiki lifecycle concern.
+
 ## What lifecycle metadata should not do
 
 It should not:

@@ -1,0 +1,12 @@
+{
+  "id": "query-knowledge-base",
+  "prompt": "Query the knowledge base about the project authentication flow. The wiki has an auth-session module page. Answer must cite specific pages, distinguish KB-sourced from supplemental reasoning, and offer to save the answer.",
+  "checks": [
+    "answer cites at least one specific wiki page path or slug",
+    "citations use structured format with source_path and confidence fields",
+    "KB-sourced reasoning is clearly separated from supplemental reasoning",
+    "coverage assessment is present (high/medium/low)",
+    "offers to save the answer as a new wiki page or section",
+    "does not modify any wiki files (read-only mode)"
+  ]
+}

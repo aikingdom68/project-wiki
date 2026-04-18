@@ -28,6 +28,10 @@ What module or subsystem this page describes.
 
 - 
 
+## Related Pages
+
+- [[page-slug]] — why this page is related
+
 ## Lifecycle
 
 Add lightweight lifecycle notes when module knowledge needs review or supersession tracking.

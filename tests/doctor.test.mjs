@@ -77,6 +77,16 @@ const requiredFiles = {
     null,
     2,
   ),
+  "contracts/retrieval-contract.schema.json": JSON.stringify(
+    {
+      definitions: {
+        retrieval_request: { type: "object" },
+        retrieval_response: { type: "object" },
+      },
+    },
+    null,
+    2,
+  ),
   "references/llm-wiki-core.md": "# core\n",
   "references/local-rag-engineering.md": "# rag\n",
   "references/project-assistant-playbook.md": "# playbook\n",
@@ -89,6 +99,8 @@ const requiredFiles = {
   "references/knowledge-lifecycle.md":
     "# lifecycle\n\nreview_status\nlast_reviewed\nretention_class\nconfidence_basis\nsupersedes\nsuperseded_by\nconsolidation_status\ncrystallized_from\n",
   "references/output-quality-standards.md": "# output quality\n",
+  "references/wiki-linking.md": "# wiki linking\n",
+  "references/cold-start-protocol.md": "# cold start\n",
   "references/templates/overview-page.md":
     "# Overview Page Template\n\nreview_status\nretention_class\nconsolidation_status\n",
   "references/templates/module-page.md":
@@ -99,6 +111,7 @@ const requiredFiles = {
     "# Glossary Page Template\n\nreview_status\nretention_class\n",
   "references/templates/troubleshooting-page.md":
     "# Troubleshooting Page Template\n\nreview_status\nsupersedes\n",
+  "references/templates/schema-page.md": "# SCHEMA.md Template\n",
   "examples/explain-project.md": "# Example: Explain Project\n",
   "examples/source-guided-explain.md": "# Example: Source Guided Explain\n",
   "examples/build-wiki-plan.md":

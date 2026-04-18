@@ -14,6 +14,7 @@ const requiredFiles = [
   "ROADMAP.md",
   "contracts/source-policy.schema.json",
   "contracts/output-contract.schema.json",
+  "contracts/retrieval-contract.schema.json",
   "references/llm-wiki-core.md",
   "references/local-rag-engineering.md",
   "references/project-assistant-playbook.md",
@@ -25,11 +26,14 @@ const requiredFiles = [
   "references/incremental-update-protocol.md",
   "references/knowledge-lifecycle.md",
   "references/output-quality-standards.md",
+  "references/wiki-linking.md",
+  "references/cold-start-protocol.md",
   "references/templates/overview-page.md",
   "references/templates/module-page.md",
   "references/templates/decision-page.md",
   "references/templates/glossary-page.md",
   "references/templates/troubleshooting-page.md",
+  "references/templates/schema-page.md",
   "examples/explain-project.md",
   "examples/source-guided-explain.md",
   "examples/build-wiki-plan.md",
@@ -49,10 +53,39 @@ const requiredFiles = [
 const jsonFiles = [
   "contracts/source-policy.schema.json",
   "contracts/output-contract.schema.json",
+  "contracts/retrieval-contract.schema.json",
   ...collectFiles("evals/cases", ".json"),
 ];
 
 const parsedJson = new Map();
+
+const skillRepoPrefixes = [
+  "references/",
+  "contracts/",
+  "examples/",
+  "scripts/",
+  "evals/",
+  "tests/",
+  "./references/",
+  "./contracts/",
+  "./examples/",
+  "./scripts/",
+  "./evals/",
+  "./tests/",
+  "../",
+];
+
+const skillRepoRootFiles = new Set([
+  "SKILL.md",
+  "README.md",
+  "README.zh-CN.md",
+  "LICENSE",
+  "CHANGELOG.md",
+  "RELEASE.md",
+  "RELEASE-PLANNING.md",
+  "PUBLISHING.md",
+  "ROADMAP.md",
+]);
 
 const lifecycleMarkers = [
   "review_status",
@@ -219,16 +252,17 @@ function validateMarkdownReferences() {
 
   for (const rel of markdownFiles) {
     const content = readText(rel);
+    const contentOutsideCodeBlocks = stripFencedCodeBlocks(content);
     const referencedPaths = new Set();
 
-    for (const match of content.matchAll(markdownLinkRegex)) {
+    for (const match of contentOutsideCodeBlocks.matchAll(markdownLinkRegex)) {
       const rawTarget = match[1].trim();
       if (shouldValidateReference(rawTarget)) {
         referencedPaths.add(rawTarget);
       }
     }
 
-    for (const match of content.matchAll(codePathRegex)) {
+    for (const match of contentOutsideCodeBlocks.matchAll(codePathRegex)) {
       const rawTarget = match[1].trim();
       if (shouldValidateReference(rawTarget)) {
         referencedPaths.add(rawTarget);
@@ -249,6 +283,10 @@ function validateMarkdownReferences() {
       }
     }
   }
+}
+
+function stripFencedCodeBlocks(content) {
+  return content.replace(/^```[\s\S]*?^```/gm, "");
 }
 
 function validateLifecycleCoverage() {
@@ -420,7 +458,19 @@ function shouldValidateReference(reference) {
     return false;
   }
 
-  return /\.(md|json|mjs)$/.test(reference);
+  if (!/\.(md|json|mjs)$/.test(reference)) {
+    return false;
+  }
+
+  if (skillRepoRootFiles.has(reference)) {
+    return true;
+  }
+
+  if (skillRepoPrefixes.some((prefix) => reference.startsWith(prefix))) {
+    return true;
+  }
+
+  return false;
 }
 
 function normalizeReference(reference) {

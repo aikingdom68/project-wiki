@@ -134,6 +134,7 @@ It can also be understood as a **system capability specification** for platforms
 - teaching/explanation systems
 - project explanation systems
 - local-knowledge-driven explanation engines
+- **AI SaaS products that need knowledge-first answers**
 
 In this kind of setting, `project-wiki` does not define “how the user should write the prompt,” but instead defines:
 
@@ -142,6 +143,10 @@ In this kind of setting, `project-wiki` does not define “how the user should w
 - how the system organizes explanations according to source logic
 - how the system distinguishes example-based reasoning, local supplementary explanation, and general supplementary knowledge
 - how the system should explicitly resolve conflicts between knowledge sources
+- **how the retrieval layer interfaces with the knowledge base** (see `contracts/retrieval-contract.schema.json`)
+- **how API responses carry structured citations** (see `references/evidence-and-citation.md`)
+- **how the system degrades gracefully when offline** (see `references/modes-and-safety.md`)
+- **how to bootstrap a knowledge base from zero** (see `references/cold-start-protocol.md`)
 
 This is especially important if you are building a problem-explanation platform:
 
@@ -150,6 +155,22 @@ This is especially important if you are building a problem-explanation platform:
 - the system should try to follow the example library’s analysis order, terminology, and problem-solving rhythm
 - if the example library is insufficient, the system should supplement with other local materials, and only then with general knowledge
 - if the example library conflicts with the current project implementation or the project docs/wiki, the conflict should be marked explicitly instead of being silently blended into one answer
+
+### SaaS Integration
+
+If you are building an AI SaaS product, `project-wiki` provides concrete integration contracts:
+
+| Contract | Purpose |
+|----------|---------|
+| `contracts/retrieval-contract.schema.json` | Defines retrieval request/response shapes: query, source filters, retrieval modes, coverage assessment, fallback signals, snapshot versioning |
+| `contracts/output-contract.schema.json` | Defines structured output shapes by task type, including citation objects for API responses |
+| `contracts/source-policy.schema.json` | Defines per-tenant or per-project source prioritization policies |
+
+Key SaaS-specific guidance:
+- **Offline fallback**: `references/modes-and-safety.md` → “Offline capability boundary for SaaS” defines what works offline, what degrades, and what requires connectivity
+- **Cold start**: `references/cold-start-protocol.md` covers bootstrapping a new instance from zero
+- **Citations**: `references/evidence-and-citation.md` → “API-facing citation format” defines citation objects and inline markers for frontend rendering
+- **Version snapshots**: `references/knowledge-lifecycle.md` → “Version snapshots” supports historical queries against past knowledge base states
 
 For more complete guidance, see:
 - `references/source-priority-guidance.md`
@@ -165,6 +186,8 @@ Use it when you want to:
 - evaluate design quality, boundaries, technical debt, or migration paths
 - build or update a project wiki / knowledge base
 - generate onboarding summaries, ADR-style conclusions, module maps, or troubleshooting pages
+- **query a knowledge base with citations** — get evidence-backed answers with structured references to source pages
+- **build an AI SaaS product** that needs knowledge-first answers, offline fallback, and structured citations
 
 ## When Not to Use It
 
@@ -280,6 +303,8 @@ Please use project-wiki to explain this problem based primarily on the example l
 - **comparison matrices**: structured comparison of multiple options
 - **decision memos**: recommendations, reasons, evidence, and items that still need validation
 - **wiki build/update plans**: what pages to create first, how to fill gaps, and how to update existing knowledge
+- **knowledge base query responses**: evidence-backed answers with structured citations, coverage assessment, and save-back offers
+- **API-ready citation objects**: structured references that frontends can render as links, tooltips, or highlights
 
 ## Typical Use Cases
 
@@ -317,7 +342,14 @@ Have it turn scattered materials into:
 - decision records
 - lists of missing documentation
 
-### 6. Problem-explanation / teaching-system scenarios
+### 6. AI SaaS with knowledge-first answers
+When building an AI SaaS product:
+- configure `contracts/retrieval-contract.schema.json` as the search interface
+- render citations from `contracts/output-contract.schema.json` → `citations` field
+- handle offline mode using the degradation sequence in `references/modes-and-safety.md`
+- bootstrap new instances with `references/cold-start-protocol.md`
+
+### 7. Problem-explanation / teaching-system scenarios
 If you have:
 - an example library
 - course notes
@@ -438,18 +470,24 @@ That means:
 - `references/llm-wiki-core.md` — the LLM Wiki worldview
 - `references/local-rag-engineering.md` — local retrieval / RAG engineering support
 - `references/project-assistant-playbook.md` — explanation / evaluation / comparison / decision patterns
-- `references/modes-and-safety.md` — boundaries for local-first and online/API-enhanced modes
+- `references/modes-and-safety.md` — boundaries for local-first and online/API-enhanced modes, offline SaaS capability boundary
 - `references/source-priority-guidance.md` — rules for prioritizing specified local knowledge sources and reusing their explanation style
-- `references/system-integration-guidance.md` — how to use it as a platform capability specification
+- `references/system-integration-guidance.md` — how to use it as a platform capability specification, SaaS integration contracts
+- `references/wiki-linking.md` — `[[slug]]` cross-reference syntax, backlinks, and orphan detection
+- `references/cold-start-protocol.md` — bootstrapping a knowledge base from zero
+
+### Contracts
+- `contracts/output-contract.schema.json` — structured output shapes by task type, including citations
+- `contracts/source-policy.schema.json` — source prioritization policies
+- `contracts/retrieval-contract.schema.json` — retrieval request/response shapes for SaaS and API contexts
 
 ### Maintenance and quality files
-- `contracts/*.json` — source policy and output contracts
-- `references/evidence-and-citation.md` — lightweight evidence citation guidance
-- `references/wiki-quality-audit.md` — wiki quality audit rules
-- `references/incremental-update-protocol.md` — incremental update protocol
-- `references/knowledge-lifecycle.md` — lightweight knowledge lifecycle vocabulary and maintenance semantics
+- `references/evidence-and-citation.md` — lightweight evidence citation guidance, API-facing citation format
+- `references/wiki-quality-audit.md` — wiki quality audit rules, link validation, orphan detection
+- `references/incremental-update-protocol.md` — incremental update protocol, operation log specification
+- `references/knowledge-lifecycle.md` — lightweight knowledge lifecycle vocabulary, version snapshots
 - `references/output-quality-standards.md` — minimum output quality standards
-- `references/templates/*.md` — page templates
+- `references/templates/*.md` — page templates (overview, module, decision, glossary, troubleshooting, SCHEMA)
 - `examples/*.md` — high-quality usage examples
 - `scripts/install.mjs` / `scripts/doctor.mjs` — installation and self-check tools
 - `evals/` — lightweight golden cases and rubrics

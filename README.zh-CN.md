@@ -133,13 +133,18 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 - 教学解释系统
 - 项目讲解系统
 - 本地知识驱动的 explanation engine
+- **需要知识库优先回答的 AI SaaS 产品**
 
-在这种场景下，`project-wiki` 定义的不是“用户该怎么说 prompt”，而是：
+在这种场景下，`project-wiki` 定义的不是”用户该怎么说 prompt”，而是：
 - 系统如何识别主知识源
 - 系统如何决定知识源优先级
 - 系统如何按知识源的思路组织讲解
 - 系统如何区分例题思路、本地补充说明和一般性补充
 - 系统在知识源冲突时应该如何显式裁决
+- **检索层如何与知识库对接**（见 `contracts/retrieval-contract.schema.json`）
+- **API 响应如何携带结构化引用**（见 `references/evidence-and-citation.md`）
+- **离线时系统如何优雅降级**（见 `references/modes-and-safety.md`）
+- **如何从零引导知识库冷启动**（见 `references/cold-start-protocol.md`）
 
 如果你在做讲题平台，这一点尤其重要：
 - 例题库可以是主知识源
@@ -147,6 +152,22 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 - 系统应尽量沿用例题库的分析顺序、术语和解题节奏
 - 如果例题库不足，再补充其他本地资料，最后才补一般知识
 - 如果例题库与项目当前实现或项目 docs/wiki 冲突，应显式标记冲突，而不是自动揉成一个答案
+
+### SaaS 集成
+
+如果你正在构建 AI SaaS 产品，`project-wiki` 提供了具体的集成契约：
+
+| 契约 | 用途 |
+|------|------|
+| `contracts/retrieval-contract.schema.json` | 定义检索请求/响应结构：查询、源过滤、检索模式、覆盖度评估、降级信号、快照版本 |
+| `contracts/output-contract.schema.json` | 定义按任务类型的结构化输出，包含 API 响应的引用对象 |
+| `contracts/source-policy.schema.json` | 定义按租户或按项目的知识源优先级策略 |
+
+关键 SaaS 场景指导：
+- **离线降级**：`references/modes-and-safety.md` → “Offline capability boundary for SaaS” 定义了离线可用/受限/不可用的能力边界和降级序列
+- **冷启动**：`references/cold-start-protocol.md` 覆盖了从零引导新实例的全流程
+- **引用格式**：`references/evidence-and-citation.md` → “API-facing citation format” 定义了前端可渲染的引用对象和行内标记
+- **版本快照**：`references/knowledge-lifecycle.md` → “Version snapshots” 支持对历史知识库状态的回溯查询
 
 更完整的说明见：
 - `references/source-priority-guidance.md`
@@ -161,6 +182,8 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 - 评估设计质量、边界、技术债或迁移路径
 - 为项目建立或更新 wiki / knowledge base
 - 生成 onboarding 总结、ADR 风格结论、模块地图或 troubleshooting 页面
+- **查询知识库并获得带引用的回答** —— 证据化回答 + 结构化引用指向源页面
+- **构建 AI SaaS 产品** —— 知识库优先回答、离线降级、结构化引用
 
 ## 什么时候不要用
 
@@ -275,6 +298,8 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 - **对比矩阵**：结构化比较多个选项
 - **决策备忘录**：给出推荐、理由、证据、待验证项
 - **wiki 构建/更新计划**：告诉你该先建什么页、怎么补缺口、怎么更新
+- **知识库查询响应**：带结构化引用的证据化回答 + 覆盖度评估 + 保存提议
+- **API 引用对象**：前端可渲染为链接、提示框或高亮的结构化引用
 
 ## 典型使用场景
 
@@ -312,7 +337,14 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 - decision 记录
 - 缺失文档清单
 
-### 6. 讲题 / 教学系统场景
+### 6. AI SaaS 知识库优先回答
+构建 AI SaaS 产品时：
+- 用 `contracts/retrieval-contract.schema.json` 作为检索接口
+- 用 `contracts/output-contract.schema.json` → `citations` 字段渲染引用
+- 用 `references/modes-and-safety.md` 处理离线降级
+- 用 `references/cold-start-protocol.md` 引导新实例冷启动
+
+### 7. 讲题 / 教学系统场景
 如果你有：
 - 例题库
 - 讲义
@@ -432,18 +464,24 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 - `references/llm-wiki-core.md` — LLM Wiki 世界观
 - `references/local-rag-engineering.md` — 本地检索 / RAG 工程支持
 - `references/project-assistant-playbook.md` — 解释 / 评估 / 对比 / 决策模式
-- `references/modes-and-safety.md` — local-first 与 online/API-enhanced 边界
+- `references/modes-and-safety.md` — local-first 与 online/API-enhanced 边界，离线 SaaS 能力边界
 - `references/source-priority-guidance.md` — 指定本地知识源优先讲解与讲解风格复用规则
-- `references/system-integration-guidance.md` — 作为平台能力规范时的系统使用方式
+- `references/system-integration-guidance.md` — 作为平台能力规范时的系统使用方式，SaaS 集成契约
+- `references/wiki-linking.md` — `[[slug]]` 交叉引用语法、反向链接、孤页检测
+- `references/cold-start-protocol.md` — 从零引导知识库冷启动
+
+### 契约文件
+- `contracts/output-contract.schema.json` — 按任务类型的结构化输出，含引用对象
+- `contracts/source-policy.schema.json` — 知识源优先级策略
+- `contracts/retrieval-contract.schema.json` — SaaS/API 场景的检索请求/响应结构
 
 ### 维护与质量文件
-- `contracts/*.json` — source policy 与 output contract
-- `references/evidence-and-citation.md` — 轻量证据引用规范
-- `references/wiki-quality-audit.md` — wiki 质量审计规则
-- `references/incremental-update-protocol.md` — 增量更新协议
-- `references/knowledge-lifecycle.md` — 轻量知识生命周期词汇与维护语义
+- `references/evidence-and-citation.md` — 轻量证据引用规范，API 引用格式
+- `references/wiki-quality-audit.md` — wiki 质量审计规则，链接校验，孤页检测
+- `references/incremental-update-protocol.md` — 增量更新协议，操作日志规范
+- `references/knowledge-lifecycle.md` — 轻量知识生命周期词汇，版本快照
 - `references/output-quality-standards.md` — 输出质量最低标准
-- `references/templates/*.md` — 页面模板
+- `references/templates/*.md` — 页面模板（overview、module、decision、glossary、troubleshooting、SCHEMA）
 - `examples/*.md` — 高质量使用样例
 - `scripts/install.mjs` / `scripts/doctor.mjs` — 安装与自检工具
 - `evals/` — 轻量 golden cases 与 rubric
