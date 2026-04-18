@@ -198,18 +198,90 @@ Do not use it when you only need to:
 - do ordinary search without needing project knowledge structure
 - do external market research instead of organizing local project knowledge
 
-## Competitive Advantages
+## How Is This Different from Pure RAG?
 
-- **Compared with pure RAG**: pure RAG usually focuses on retrieving relevant chunks and answering the current question; `project-wiki` focuses on turning high-value understanding into durable pages so knowledge accumulates over time instead of being re-retrieved and re-generated every time.
+This is the most common question. The core difference is not “who retrieves better” — it is that **the knowledge layer itself has a different shape**.
+
+### How pure RAG works
+
+```
+User question → search raw document chunks → LLM generates answer from chunks → answer disappears into chat
+```
+
+Every time: re-retrieve, re-assemble, re-generate. Knowledge does not accumulate. The understanding from the last answer does not help the next one.
+
+### How project-wiki works
+
+```
+Raw materials → structured wiki pages (human-readable, browsable, citable)
+User question → check wiki pages first → if API available, synthesize → if offline, return page content directly
+```
+
+Knowledge is pre-organized. Queries do not start from zero each time.
+
+### Offline comparison (this is the key difference)
+
+| | Pure RAG (offline) | project-wiki (offline) |
+|---|---|---|
+| **Usable?** | **No.** Chunks without LLM cannot generate answers — effectively dead | **Yes.** Wiki pages are complete, human-readable knowledge — no LLM required |
+| **What can users see?** | Fragmented document chunks, or “service unavailable” | Structured knowledge pages: project overview, module docs, decision records, glossary, troubleshooting |
+| **Searchable?** | Vector search may work, but returns raw fragments, not answers | Index.md provides a navigable catalog; `[[wikilinks]]` enable related-page traversal |
+| **Citable?** | No — citations require LLM assembly | **Yes.** Pages have built-in evidence links and citation anchors |
+| **Fact vs inference separated?** | No — LLM blends them during generation | **Yes.** Pages already separate verified facts, synthesis, and open questions |
+
+**One line: Pure RAG offline = dead. project-wiki offline = degraded but usable.**
+
+### Online comparison (with API)
+
+| | Pure RAG (with API) | project-wiki (with API) |
+|---|---|---|
+| **Answer quality** | Depends on retrieval quality each time — inconsistent | Wiki layer already contains high-quality knowledge; API synthesizes and supplements, not generates from scratch |
+| **Knowledge accumulation** | None — re-retrieves from raw documents every time | Accumulates: good answers can be saved back as wiki pages for direct reuse |
+| **Citation reliability** | Citations point to raw chunks; user must judge relevance | Citations point to specific wiki page sections with confidence labels (verified_fact / synthesis / open_question) |
+| **Coverage awareness** | Does not know if the knowledge base covers the question; may hallucinate | Explicitly reports coverage (high/medium/low); states “not covered” before falling back |
+| **Cost** | Heavy token usage for generation every time | Wiki layer serves existing knowledge directly; LLM only called for synthesis and analysis |
+
+### No API required — that is a feature, not a limitation
+
+`project-wiki` **does not require an API**. Its core output is **markdown wiki pages** — readable, searchable, and usable with or without an LLM.
+
+The API is an enhancement layer, not a dependency:
+
+| Mode | Description |
+|------|-------------|
+| **Fully offline** | Browse wiki pages, search via index, navigate via wikilinks, view evidence and citations. For private environments, air-gapped networks, local-only deployments. |
+| **Local-first + API-enhanced** | Check wiki pages first, call LLM only when synthesis is needed. Most queries do not need the API. |
+| **Fully online** | Wiki pages + LLM synthesis + external knowledge supplement. For scenarios requiring real-time reasoning and external validation. |
+
+### Does this only work when chatting with Claude?
+
+**No.** This is the most important point to understand.
+
+The core output of `project-wiki` is **standardized markdown pages + JSON contracts**, not a Claude-proprietary format. Your own product code can use them directly:
+
+| Output | In Claude conversation | Embedded in your product |
+|--------|----------------------|--------------------------|
+| **Wiki pages** | Claude reads them to answer your questions | Your backend reads the .md files, parses them, and returns structured content to the frontend |
+| **index.md** | Claude uses it to find relevant pages | Your product uses it as a search entry point — scan the index for candidates, faster than full-text search |
+| **`[[wikilinks]]`** | Claude uses them to navigate related knowledge | Your frontend renders them as clickable links for users to browse |
+| **_backlinks.json** | Claude uses it to discover reverse references | Your product uses it for “related pages” recommendations |
+| **Three-layer separation** (verified_fact / synthesis / open_question) | Claude presents them layered in responses | Your frontend uses different colors/labels — green = verified, yellow = synthesis, gray = unconfirmed |
+| **retrieval-contract.schema.json** | Claude uses it internally | Your product backend implements its retrieval API to this schema directly |
+| **output-contract.schema.json** | Claude outputs in this format | Your product formats API responses to this schema |
+| **Citation objects** | Claude attaches citations to answers | Your frontend renders them as footnotes, tooltips, or highlights |
+| **SCHEMA.md** | Claude reads wiki structure from here | Your backend reads the wiki root path and naming rules from here |
+
+**The key difference:**
+- **Pure RAG** embedded in a product — without LLM, chunks are useless (they are for LLM consumption, not human consumption)
+- **project-wiki** embedded in a product — wiki pages ARE the product content (human-readable, machine-parseable, frontend-renderable)
+
+### Compared with other products
+
 - **Compared with Repo Chat / repository Q&A**: Repo Chat is more oriented toward immediate Q&A; `project-wiki` emphasizes evidence, page structure, gaps, decision context, and update paths, making it better suited to project explanation, design evaluation, trade-off analysis, onboarding, and troubleshooting capture.
 - **Compared with static wikis or generic document repositories**: traditional documentation is good at storing content; `project-wiki` emphasizes source priority, separation between facts and synthesis, explicit conflict handling, and continuous maintenance of a project knowledge layer instead of just accumulating documents.
 - **Compared with generic AI memory or note-taking products**: generic tools often optimize for personal recording or free retrieval; `project-wiki` is more opinionated about project context, primary knowledge source priority, and only cautiously falls back to general knowledge when local evidence is insufficient.
 - **Compared with cloud-first or external-index-first products**: many products assume content is sent to external indexes or online services; `project-wiki` is **local-first** by default, making it a better fit for private repositories, sensitive materials, and offline-oriented workflows.
-- **Compared with one-off summary tools**: one-off summaries go stale easily; `project-wiki` now also supports lightweight lifecycle semantics such as `review_status`, `supersedes`, `retention_class`, and `consolidation_status`, making it better suited for long-term maintenance.
-
-One-line summary:
-
-> Pure RAG is about “retrieving the right chunk,” Repo Chat is about “ask now, answer now,” and `project-wiki` is about turning project knowledge into a durable, evidence-backed, reusable working layer.
+- **Compared with one-off summary tools**: one-off summaries go stale easily; `project-wiki` supports lightweight lifecycle semantics such as `review_status`, `supersedes`, `retention_class`, and `consolidation_status`, making it better suited for long-term maintenance.
 
 ## Page Labels and Contract Key Mapping
 
