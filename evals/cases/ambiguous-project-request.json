@@ -1,0 +1,9 @@
+{
+  "id": "ambiguous-project-request",
+  "prompt": "请用 project-wiki 处理一下这个项目，我想把它整理好。",
+  "checks": [
+    "adapts to the project before deep synthesis",
+    "asks clarification questions when the target artifact is unclear",
+    "proposes options instead of silently choosing one route"
+  ]
+}

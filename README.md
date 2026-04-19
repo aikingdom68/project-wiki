@@ -77,6 +77,8 @@ In Claude Code, you can trigger it like this:
 Please use project-wiki to explain the core architecture of this project.
 ```
 
+The preferred public entry is the slash skill `/project-wiki`.
+
 Or invoke it directly as a slash skill:
 
 ```text
@@ -84,6 +86,12 @@ Or invoke it directly as a slash skill:
 ```
 
 By default, it is best used inside your target project directory so Claude can read the current project files as local evidence.
+
+When entering a new or unfamiliar project, the preferred behavior is:
+1. adapt to the project first
+2. identify likely sources and project state
+3. ask a small number of clarification questions when needed
+4. propose best-fit routes before committing to one output shape
 
 Note: although the skill declares browser capability, the default posture is still **local-first**. Unless you explicitly authorize it, or you truly need public external facts, private project content should not be sent to online search or external APIs.
 

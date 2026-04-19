@@ -31,6 +31,9 @@ const requiredFiles = {
         privacy_class: { type: "string" },
         style_following_allowed: { type: "boolean" },
         fallback_allowed: { type: "boolean" },
+        usage_role: { type: "string" },
+        preferred_for_task_types: { type: "array" },
+        conflict_mode: { type: "string" },
         review_cadence: {
           type: "string",
           description: "Lightweight review expectation.",
@@ -44,11 +47,30 @@ const requiredFiles = {
     null,
     2,
   ),
+  "contracts/source-policy-list.schema.json": JSON.stringify(
+    {
+      type: "object",
+      properties: {
+        format: { const: "source-policy-list" },
+        policies: { type: "array" },
+      },
+    },
+    null,
+    2,
+  ),
   "contracts/output-contract.schema.json": JSON.stringify(
     {
       type: "object",
       properties: {
         task_type: { type: "string" },
+        deliverable_type: { type: "string" },
+        interaction_status: { type: "string" },
+        project_profile: { type: "object" },
+        project_state: { type: "string" },
+        routing_decision: { type: "object" },
+        clarifying_questions: { type: "array" },
+        proposed_modes: { type: "array" },
+        confirmed_scope: { type: "object" },
         verified_facts: { type: "array" },
         synthesis: { type: "array" },
         evidence: { type: "array" },
@@ -69,6 +91,12 @@ const requiredFiles = {
       },
       allOf: [
         {
+          if: { properties: { task_type: { const: "adapt_project" } } },
+          then: {
+            required: ["project_profile", "routing_decision", "proposed_modes"],
+          },
+        },
+        {
           if: { properties: { task_type: { const: "update_wiki" } } },
           then: { required: ["update_plan", "review_status"] },
         },
@@ -80,8 +108,23 @@ const requiredFiles = {
   "contracts/retrieval-contract.schema.json": JSON.stringify(
     {
       definitions: {
-        retrieval_request: { type: "object" },
-        retrieval_response: { type: "object" },
+        retrieval_request: {
+          type: "object",
+          properties: {
+            task_type: { type: "string" },
+            interaction_stage: { type: "string" },
+            preferred_source: { type: "string" },
+            project_state_probe: { type: "boolean" },
+          },
+        },
+        retrieval_response: {
+          type: "object",
+          properties: {
+            project_state_assessment: { type: "string" },
+            clarification_needed: { type: "boolean" },
+            policy_decision_trace: { type: "array" },
+          },
+        },
       },
     },
     null,
@@ -92,7 +135,29 @@ const requiredFiles = {
   "references/project-assistant-playbook.md": "# playbook\n",
   "references/modes-and-safety.md": "# modes\n",
   "references/source-priority-guidance.md": "# source priority\n",
-  "references/system-integration-guidance.md": "# system integration\n",
+  "contracts/project-profile.schema.json": JSON.stringify(
+    {
+      type: "object",
+      properties: {
+        project_type: { type: "string" },
+        cold_start_status: { type: "string" },
+        primary_sources: { type: "array" },
+        fallback_order: { type: "array" },
+        privacy_mode: { type: "string" },
+        style_following_default: { type: "boolean" },
+      },
+    },
+    null,
+    2,
+  ),
+  "references/system-integration-guidance.md":
+    "# system integration\n\ninteraction_stage\nproject_state\n",
+  "references/project-adaptation-protocol.md":
+    "# project adaptation\n\nproject type\nproject state\ncandidate routes\n",
+  "references/interactive-clarification-guidance.md":
+    "# clarification\n\nClarification rule\nOption-proposal pattern\ngoal\n",
+  "references/task-routing-guidance.md":
+    "# routing\n\nPrimary task types\nMulti-intent rule\ncold project\n",
   "references/evidence-and-citation.md": "# evidence\n",
   "references/wiki-quality-audit.md": "# audit\n",
   "references/incremental-update-protocol.md": "# incremental\n",
@@ -116,6 +181,12 @@ const requiredFiles = {
   "examples/source-guided-explain.md": "# Example: Source Guided Explain\n",
   "examples/build-wiki-plan.md":
     "# Example: Build Wiki Plan\n\n- review_status\n- retention_class\n- consolidation_status\n",
+  "examples/adapt-project-first.md":
+    "# Example: Adapt Project First\n\nproject type\nprimary sources\nroutes\n",
+  "examples/interactive-clarification.md":
+    "# Example: Interactive Clarification\n\nquestions\ncandidate routes\nwrite intent\n",
+  "examples/task-routing-multi-intent.md":
+    "# Example: Task Routing\n\nprimary route\nsupporting tasks\nconfirmation\n",
   "examples/compare-options.md": "# Example: Compare Options\n",
   "examples/evaluation-report.md":
     "# Example: Evaluation Report\n\n- review_status\n- last_reviewed\n- confidence_basis\n",
@@ -124,7 +195,8 @@ const requiredFiles = {
   "scripts/doctor.mjs": "#!/usr/bin/env node\n",
   "scripts/install.mjs":
     '#!/usr/bin/env node\nconst whitelist = ["SKILL.md", "README.md", "README.zh-CN.md", "LICENSE", "CHANGELOG.md", "RELEASE.md", "PUBLISHING.md", "ROADMAP.md", "contracts", "references", "examples", "scripts", "evals"];\n',
-  "evals/README.md": "# Eval Cases\n\n- lifecycle\n- knowledge-lifecycle\n",
+  "evals/README.md":
+    "# Eval Cases\n\n- lifecycle\n- knowledge-lifecycle\n- project adaptation\n- clarification\n- route options\n",
   "evals/cases/source-guided-example-bank.json": JSON.stringify(
     {
       id: "source-guided-example-bank",
@@ -170,6 +242,51 @@ const requiredFiles = {
         "mentions consolidation_status",
         "mentions supersession",
       ],
+    },
+    null,
+    2,
+  ),
+  "evals/cases/ambiguous-project-request.json": JSON.stringify(
+    {
+      id: "ambiguous-project-request",
+      prompt: "prompt",
+      checks: ["one"],
+    },
+    null,
+    2,
+  ),
+  "evals/cases/cold-start-project-adaptation.json": JSON.stringify(
+    {
+      id: "cold-start-project-adaptation",
+      prompt: "prompt",
+      checks: ["one"],
+    },
+    null,
+    2,
+  ),
+  "evals/cases/multi-intent-routing.json": JSON.stringify(
+    {
+      id: "multi-intent-routing",
+      prompt: "prompt",
+      checks: ["one"],
+    },
+    null,
+    2,
+  ),
+  "evals/cases/clarification-before-plan.json": JSON.stringify(
+    {
+      id: "clarification-before-plan",
+      prompt: "prompt",
+      checks: ["one"],
+    },
+    null,
+    2,
+  ),
+  "evals/cases/preferred-source-conflict-routing.json": JSON.stringify(
+    {
+      id: "preferred-source-conflict-routing",
+      prompt: "prompt",
+      checks: ["one"],
     },
     null,
     2,

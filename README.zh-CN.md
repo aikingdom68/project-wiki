@@ -77,6 +77,8 @@ node scripts/install.mjs . --force
 请用 project-wiki 解释这个项目的核心架构。
 ```
 
+推荐把 `/project-wiki` 当成这个 skill 的统一公开入口。
+
 或者直接使用 slash skill：
 
 ```text
@@ -84,6 +86,12 @@ node scripts/install.mjs . --force
 ```
 
 默认建议在你的目标项目目录中使用它，让 Claude 能读取当前项目文件作为本地证据。
+
+进入一个陌生项目时，推荐行为是：
+1. 先做项目适配
+2. 识别项目状态与候选知识源
+3. 必要时先问 1-3 个澄清问题
+4. 先给出最适合的几条路径，再进入具体输出
 
 注意：虽然 skill 声明了 browser 能力，但默认仍然是 **local-first**。除非你明确授权，或确实需要查询公开外部事实，否则不应把私有项目内容发送到在线搜索或外部 API。
 

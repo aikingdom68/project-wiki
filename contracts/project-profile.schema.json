@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project Wiki Project Profile Contract",
+  "description": "Defines the project adaptation profile used before routing Project Wiki tasks.",
+  "type": "object",
+  "required": [
+    "project_type",
+    "cold_start_status",
+    "primary_sources",
+    "fallback_order",
+    "privacy_mode",
+    "style_following_default"
+  ],
+  "properties": {
+    "project_type": {
+      "type": "string",
+      "enum": [
+        "software_repo",
+        "teaching_system",
+        "documentation_kb",
+        "saas_kb",
+        "example_bank",
+        "mixed"
+      ]
+    },
+    "project_name": {
+      "type": "string"
+    },
+    "cold_start_status": {
+      "type": "string",
+      "enum": ["cold", "partial", "mature", "unknown"]
+    },
+    "primary_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "secondary_sources": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "fallback_order": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "preferred_tasks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "adapt_project",
+          "explain",
+          "evaluate",
+          "compare",
+          "decide",
+          "build_wiki",
+          "update_wiki",
+          "source_guided_explain",
+          "query",
+          "propose_options"
+        ]
+      }
+    },
+    "style_following_default": {
+      "type": "boolean"
+    },
+    "privacy_mode": {
+      "type": "string",
+      "enum": ["local_only", "local_first", "hybrid"]
+    },
+    "allow_external": {
+      "type": "boolean",
+      "default": false
+    },
+    "wiki_root": {
+      "type": "string"
+    },
+    "kb_entrypoints": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "validation_profile": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

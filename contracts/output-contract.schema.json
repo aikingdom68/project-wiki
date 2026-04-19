@@ -14,6 +14,7 @@
     "task_type": {
       "type": "string",
       "enum": [
+        "adapt_project",
         "explain",
         "evaluate",
         "compare",
@@ -21,8 +22,91 @@
         "build_wiki",
         "update_wiki",
         "source_guided_explain",
-        "query"
+        "query",
+        "propose_options"
       ]
+    },
+    "deliverable_type": {
+      "type": "string",
+      "enum": [
+        "adaptation_report",
+        "clarification_questions",
+        "option_proposal",
+        "project_explanation",
+        "evaluation_report",
+        "comparison_matrix",
+        "decision_memo",
+        "wiki_plan",
+        "wiki_update",
+        "knowledge_query_answer"
+      ]
+    },
+    "interaction_status": {
+      "type": "string",
+      "enum": ["not_required", "needs_clarification", "awaiting_confirmation", "confirmed"]
+    },
+    "project_state": {
+      "type": "string",
+      "enum": ["cold", "partial", "mature", "unknown"]
+    },
+    "project_profile": {
+      "type": "object",
+      "properties": {
+        "project_type": {"type": "string"},
+        "project_name": {"type": "string"},
+        "cold_start_status": {"type": "string"},
+        "primary_sources": {"type": "array", "items": {"type": "string"}},
+        "secondary_sources": {"type": "array", "items": {"type": "string"}},
+        "fallback_order": {"type": "array", "items": {"type": "string"}},
+        "preferred_tasks": {"type": "array", "items": {"type": "string"}},
+        "style_following_default": {"type": "boolean"},
+        "privacy_mode": {"type": "string"},
+        "allow_external": {"type": "boolean"},
+        "wiki_root": {"type": "string"},
+        "kb_entrypoints": {"type": "array", "items": {"type": "string"}},
+        "validation_profile": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "routing_decision": {
+      "type": "object",
+      "properties": {
+        "primary_task_type": {"type": "string"},
+        "supporting_task_types": {"type": "array", "items": {"type": "string"}},
+        "why_this_route": {"type": "string"},
+        "project_state_reason": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "clarifying_questions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "proposed_modes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["mode", "why", "best_when"],
+        "properties": {
+          "mode": {"type": "string"},
+          "why": {"type": "string"},
+          "best_when": {"type": "string"},
+          "tradeoff": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "confirmed_scope": {
+      "type": "object",
+      "properties": {
+        "audience": {"type": "string"},
+        "depth": {"type": "string"},
+        "write_intent": {"type": "string"},
+        "preferred_source": {"type": "string"},
+        "deliverable": {"type": "string"}
+      },
+      "additionalProperties": false
     },
     "verified_facts": {
       "type": "array",
@@ -154,6 +238,23 @@
     {
       "if": {
         "required": ["task_type"],
+        "properties": {"task_type": {"const": "adapt_project"}}
+      },
+      "then": {
+        "required": ["deliverable_type", "project_profile", "routing_decision", "proposed_modes"]
+      }
+    },
+    {
+      "if": {
+        "properties": {"interaction_status": {"const": "needs_clarification"}}
+      },
+      "then": {
+        "required": ["clarifying_questions"]
+      }
+    },
+    {
+      "if": {
+        "required": ["task_type"],
         "properties": {"task_type": {"const": "compare"}}
       },
       "then": {
@@ -213,6 +314,15 @@
       },
       "then": {
         "required": ["citations"]
+      }
+    },
+    {
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "propose_options"}}
+      },
+      "then": {
+        "required": ["deliverable_type", "proposed_modes", "routing_decision"]
       }
     }
   ]

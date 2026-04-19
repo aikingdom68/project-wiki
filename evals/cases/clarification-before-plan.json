@@ -1,0 +1,9 @@
+{
+  "id": "clarification-before-plan",
+  "prompt": "请用 project-wiki 优化这个项目。",
+  "checks": [
+    "asks what kind of output the user wants before giving a full plan",
+    "asks whether repository changes are desired",
+    "avoids assuming build_wiki or update_wiki without confirmation"
+  ]
+}

@@ -8,7 +8,8 @@
     "authority_level",
     "privacy_class",
     "style_following_allowed",
-    "fallback_allowed"
+    "fallback_allowed",
+    "usage_role"
   ],
   "properties": {
     "source_id": {
@@ -50,6 +51,32 @@
     "fallback_allowed": {
       "type": "boolean"
     },
+    "usage_role": {
+      "type": "string",
+      "enum": ["truth", "style", "supplement", "historical"]
+    },
+    "preferred_for_task_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "adapt_project",
+          "explain",
+          "evaluate",
+          "compare",
+          "decide",
+          "build_wiki",
+          "update_wiki",
+          "source_guided_explain",
+          "query",
+          "propose_options"
+        ]
+      }
+    },
+    "conflict_mode": {
+      "type": "string",
+      "enum": ["runtime_overrides", "source_overrides", "explicit_conflict"]
+    },
     "conflict_resolution_rule": {
       "type": "string"
     },
@@ -60,6 +87,14 @@
     "supersession_rule": {
       "type": "string",
       "description": "Narrow rule for when this source should replace or be replaced by another source or page."
+    },
+    "project_applicability": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "trigger_patterns": {
+      "type": "array",
+      "items": {"type": "string"}
     },
     "notes": {
       "type": "string"

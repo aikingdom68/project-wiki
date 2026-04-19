@@ -6,6 +6,8 @@ This file defines how to bootstrap a knowledge base from zero when deploying Pro
 
 When a new SaaS instance or project first activates Project Wiki, the knowledge base is empty. Without guidance, the system has nothing to retrieve and falls back entirely to general LLM knowledge, which defeats the purpose.
 
+Cold start also means the skill should not pretend it already knows the best route. It should first adapt to the repo, summarize the project state, and propose the best next paths before deep execution.
+
 ## Cold start phases
 
 ### Phase 1: Seed inventory

@@ -52,12 +52,14 @@ A system using Project Wiki should ideally make the following inputs explicit.
 
 ```json
 {
-  "task_type": "explain | compare | evaluate | decide | build_wiki | source_guided_explain",
+  "task_type": "adapt_project | explain | compare | evaluate | decide | build_wiki | source_guided_explain | propose_options",
+  "project_state": "cold | partial | mature | unknown",
   "primary_source": "optional named local source",
   "other_local_sources": ["optional local sources"],
   "privacy_mode": "local_only | local_first | hybrid",
   "allow_external": false,
   "style_following": true,
+  "interaction_stage": "adapt | clarify | propose | confirm | execute",
   "fallback_order": [
     "primary_source",
     "other_local_sources",
@@ -90,6 +92,15 @@ If the primary source is missing or weak:
 ## System behavior model
 
 When integrated into a product, Project Wiki should behave like a knowledge-use policy.
+
+### Adaptation-first rule
+
+Before deep synthesis, the system should first:
+- classify project type
+- assess project/wiki state
+- identify candidate primary sources
+- decide whether clarification is required
+- propose the best-fit route when the target artifact is not yet clear
 
 ### Core behavior contract
 

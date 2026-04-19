@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project Wiki Source Policy List Contract",
+  "description": "Defines a machine-readable wrapper for multiple source policy objects in API/runtime contexts.",
+  "type": "object",
+  "required": ["format", "policies"],
+  "properties": {
+    "contract": {
+      "type": "string",
+      "description": "Path to the single-policy contract used by each item in policies."
+    },
+    "format": {
+      "type": "string",
+      "const": "source-policy-list"
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "$ref": "./source-policy.schema.json"
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

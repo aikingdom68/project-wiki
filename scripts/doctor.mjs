@@ -13,14 +13,19 @@ const requiredFiles = [
   "PUBLISHING.md",
   "ROADMAP.md",
   "contracts/source-policy.schema.json",
+  "contracts/source-policy-list.schema.json",
   "contracts/output-contract.schema.json",
   "contracts/retrieval-contract.schema.json",
+  "contracts/project-profile.schema.json",
   "references/llm-wiki-core.md",
   "references/local-rag-engineering.md",
   "references/project-assistant-playbook.md",
   "references/modes-and-safety.md",
   "references/source-priority-guidance.md",
   "references/system-integration-guidance.md",
+  "references/project-adaptation-protocol.md",
+  "references/interactive-clarification-guidance.md",
+  "references/task-routing-guidance.md",
   "references/evidence-and-citation.md",
   "references/wiki-quality-audit.md",
   "references/incremental-update-protocol.md",
@@ -37,6 +42,9 @@ const requiredFiles = [
   "examples/explain-project.md",
   "examples/source-guided-explain.md",
   "examples/build-wiki-plan.md",
+  "examples/adapt-project-first.md",
+  "examples/interactive-clarification.md",
+  "examples/task-routing-multi-intent.md",
   "examples/compare-options.md",
   "examples/evaluation-report.md",
   "examples/wiki-lifecycle-update.md",
@@ -48,12 +56,19 @@ const requiredFiles = [
   "evals/cases/compare-options-local-evidence.json",
   "evals/cases/evaluation-report-boundary-check.json",
   "evals/cases/wiki-lifecycle-update.json",
+  "evals/cases/ambiguous-project-request.json",
+  "evals/cases/cold-start-project-adaptation.json",
+  "evals/cases/multi-intent-routing.json",
+  "evals/cases/clarification-before-plan.json",
+  "evals/cases/preferred-source-conflict-routing.json",
 ];
 
 const jsonFiles = [
   "contracts/source-policy.schema.json",
+  "contracts/source-policy-list.schema.json",
   "contracts/output-contract.schema.json",
   "contracts/retrieval-contract.schema.json",
+  "contracts/project-profile.schema.json",
   ...collectFiles("evals/cases", ".json"),
 ];
 
@@ -134,6 +149,30 @@ const lifecycleCoverageTargets = [
   {
     rel: "examples/wiki-lifecycle-update.md",
     markers: ["review_status", "consolidation_status", "supersedes"],
+  },
+  {
+    rel: "references/project-adaptation-protocol.md",
+    markers: ["project type", "project state", "candidate routes"],
+  },
+  {
+    rel: "references/interactive-clarification-guidance.md",
+    markers: ["Clarification rule", "Option-proposal pattern", "goal"],
+  },
+  {
+    rel: "references/task-routing-guidance.md",
+    markers: ["Primary task types", "Multi-intent rule", "cold project"],
+  },
+  {
+    rel: "examples/adapt-project-first.md",
+    markers: ["project type", "primary sources", "routes"],
+  },
+  {
+    rel: "examples/interactive-clarification.md",
+    markers: ["questions", "candidate routes", "write intent"],
+  },
+  {
+    rel: "examples/task-routing-multi-intent.md",
+    markers: ["primary route", "supporting tasks", "confirmation"],
   },
   {
     rel: "evals/README.md",
@@ -366,15 +405,33 @@ function validateInstallWhitelist() {
 function validateContractClarity() {
   const outputSchema = parsedJson.get("contracts/output-contract.schema.json");
   const sourcePolicy = parsedJson.get("contracts/source-policy.schema.json");
+  const retrievalContract = parsedJson.get(
+    "contracts/retrieval-contract.schema.json",
+  );
+  const projectProfile = parsedJson.get(
+    "contracts/project-profile.schema.json",
+  );
 
-  if (!outputSchema || !sourcePolicy) {
+  if (!outputSchema || !sourcePolicy || !retrievalContract || !projectProfile) {
     return;
   }
 
   const outputProperties = outputSchema.properties ?? {};
   const sourceProperties = sourcePolicy.properties ?? {};
+  const retrievalRequest =
+    retrievalContract.definitions?.retrieval_request?.properties ?? {};
+  const retrievalResponse =
+    retrievalContract.definitions?.retrieval_response?.properties ?? {};
+  const projectProfileProperties = projectProfile.properties ?? {};
 
   for (const field of [
+    "project_profile",
+    "project_state",
+    "routing_decision",
+    "clarifying_questions",
+    "proposed_modes",
+    "confirmed_scope",
+    "deliverable_type",
     "review_status",
     "last_reviewed",
     "retention_class",
@@ -397,6 +454,50 @@ function validateContractClarity() {
     fail("SOURCE_POLICY_MISSING_DESCRIPTION: supersession_rule");
   }
 
+  for (const field of [
+    "usage_role",
+    "preferred_for_task_types",
+    "conflict_mode",
+  ]) {
+    if (!sourceProperties[field]) {
+      fail(`SOURCE_POLICY_MISSING_PROPERTY: ${field}`);
+    }
+  }
+
+  for (const field of [
+    "task_type",
+    "interaction_stage",
+    "preferred_source",
+    "project_state_probe",
+  ]) {
+    if (!retrievalRequest[field]) {
+      fail(`RETRIEVAL_CONTRACT_MISSING_REQUEST_PROPERTY: ${field}`);
+    }
+  }
+
+  for (const field of [
+    "project_state_assessment",
+    "clarification_needed",
+    "policy_decision_trace",
+  ]) {
+    if (!retrievalResponse[field]) {
+      fail(`RETRIEVAL_CONTRACT_MISSING_RESPONSE_PROPERTY: ${field}`);
+    }
+  }
+
+  for (const field of [
+    "project_type",
+    "cold_start_status",
+    "primary_sources",
+    "fallback_order",
+    "privacy_mode",
+    "style_following_default",
+  ]) {
+    if (!projectProfileProperties[field]) {
+      fail(`PROJECT_PROFILE_MISSING_PROPERTY: ${field}`);
+    }
+  }
+
   const allOf = Array.isArray(outputSchema.allOf) ? outputSchema.allOf : [];
   const hasUpdateWikiRule = allOf.some((entry) => {
     const taskType = entry?.if?.properties?.task_type?.const;
@@ -406,6 +507,17 @@ function validateContractClarity() {
   if (!hasUpdateWikiRule) {
     fail(
       "OUTPUT_CONTRACT_MISSING_UPDATE_WIKI_RULE: expected conditional lifecycle guidance for update_wiki",
+    );
+  }
+
+  const hasAdaptProjectRule = allOf.some((entry) => {
+    const taskType = entry?.if?.properties?.task_type?.const;
+    return taskType === "adapt_project";
+  });
+
+  if (!hasAdaptProjectRule) {
+    fail(
+      "OUTPUT_CONTRACT_MISSING_ADAPT_PROJECT_RULE: expected adaptation-specific conditional guidance",
     );
   }
 }

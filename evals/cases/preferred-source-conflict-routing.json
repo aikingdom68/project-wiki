@@ -1,0 +1,9 @@
+{
+  "id": "preferred-source-conflict-routing",
+  "prompt": "请用 project-wiki 优先按 docs/wiki 解释这个模块，但如果它和当前代码冲突，也请明确告诉我。",
+  "checks": [
+    "respects the preferred source when routing explanation",
+    "keeps project truth and preferred-source style distinct",
+    "makes conflicts explicit instead of silently flattening them"
+  ]
+}

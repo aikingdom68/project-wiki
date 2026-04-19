@@ -1,0 +1,9 @@
+{
+  "id": "multi-intent-routing",
+  "prompt": "请用 project-wiki 解释这个项目的架构、评估技术边界，并列出该先补哪些 wiki 页面。",
+  "checks": [
+    "selects a primary task type for a mixed request",
+    "keeps secondary tasks visible as supporting work",
+    "explains why the chosen route comes first"
+  ]
+}

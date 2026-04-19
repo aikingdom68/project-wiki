@@ -18,3 +18,12 @@ Use this rubric when reviewing Project Wiki outputs.
 
 5. **Non-generic usefulness**
    - Does the output help real project work rather than just sounding polished?
+
+6. **Project adaptation**
+   - Does the skill classify project state and likely sources before deep synthesis when needed?
+
+7. **Clarification quality**
+   - Are the questions minimal, targeted, and sufficient to avoid a wrong route?
+
+8. **Routing correctness**
+   - Does it choose the right primary task and keep supporting tasks visible when the request is broad or mixed?

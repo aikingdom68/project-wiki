@@ -1,0 +1,9 @@
+{
+  "id": "cold-start-project-adaptation",
+  "prompt": "这是一个刚开始整理的新项目。请用 project-wiki 先判断项目状态，并告诉我现在最适合做什么。",
+  "checks": [
+    "identifies cold-start or partial wiki state",
+    "produces an adaptation summary before execution",
+    "does not pretend a mature knowledge layer already exists"
+  ]
+}

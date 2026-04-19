@@ -11,6 +11,36 @@
           "type": "string",
           "description": "The user question or search intent."
         },
+        "task_type": {
+          "type": "string",
+          "enum": [
+            "adapt_project",
+            "explain",
+            "evaluate",
+            "compare",
+            "decide",
+            "build_wiki",
+            "update_wiki",
+            "source_guided_explain",
+            "query",
+            "propose_options"
+          ],
+          "description": "The intended Project Wiki task mode for this retrieval."
+        },
+        "interaction_stage": {
+          "type": "string",
+          "enum": ["adapt", "clarify", "propose", "confirm", "execute"],
+          "description": "The interaction stage that this retrieval supports."
+        },
+        "preferred_source": {
+          "type": "string",
+          "description": "Optional preferred local source named by the user or project profile."
+        },
+        "project_state_probe": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, retrieval should help classify project state or cold-start readiness rather than only answer the query."
+        },
         "source_filter": {
           "type": "array",
           "items": {"type": "string"},
@@ -125,6 +155,29 @@
         "fallback_reason": {
           "type": "string",
           "description": "Why fallback is needed. Only present when fallback_needed is true."
+        },
+        "project_state_assessment": {
+          "type": "string",
+          "enum": ["cold", "partial", "mature", "unknown"],
+          "description": "Assessment of project/wiki readiness based on discovered materials."
+        },
+        "candidate_primary_sources": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Candidate primary sources surfaced during adaptation or clarification."
+        },
+        "clarification_needed": {
+          "type": "boolean",
+          "description": "True when the system should ask the user questions before continuing."
+        },
+        "clarification_reason": {
+          "type": "string",
+          "description": "Short reason explaining why clarification is required before execution."
+        },
+        "policy_decision_trace": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Human-readable trace of source policy and routing decisions."
         },
         "snapshot_id": {
           "type": "string",

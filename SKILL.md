@@ -179,19 +179,62 @@ For deeper guidance on this system-facing use, read:
 
 ## Workflow
 
+### 0. Project adaptation
+
+Before choosing an output, first adapt to the target project.
+
+Identify:
+- project type (software repo, teaching system, documentation KB, SaaS KB, mixed)
+- project state (`cold`, `partial`, `mature`, or `unknown`)
+- likely primary sources
+- whether a durable wiki layer already exists
+- whether clarification is required before execution
+
+Expected adaptation output:
+- a lightweight project profile
+- candidate routes
+- explicit gaps in understanding
+
 ### 1. Clarify the intent
 
 Identify which of these the user needs:
+- adapt project
+- propose options
 - explain
 - evaluate
 - compare
+- decide
 - build wiki
 - update wiki
 - audit knowledge quality
+- query a knowledge base
 
 If several apply, choose the primary outcome first and treat the others as supporting tasks.
 
-### 2. Inventory local evidence
+### 2. Interactive clarification
+
+When the request is broad or under-specified, ask the minimum number of questions needed to avoid partial landing.
+
+Clarification is mandatory when any of these are unclear:
+- the desired deliverable
+- whether repository changes are wanted
+- the preferred source of truth
+- the audience or depth
+- the primary task when several goals are mixed together
+
+Prefer 1-3 questions. If more than 3 seem necessary, propose candidate routes and ask the user to choose.
+
+### 3. Propose best-fit options
+
+Before deep synthesis or repository change proposals, prefer offering 2-3 best-fit paths such as:
+- explain first
+- evaluate first
+- build or update wiki
+- source-guided explanation
+
+State why each path fits, its main trade-off, and which one you recommend by default.
+
+### 4. Inventory local evidence
 
 Start from local project materials before offering conclusions:
 - source code
@@ -203,7 +246,7 @@ Start from local project materials before offering conclusions:
 - ADR-like records
 - user-supplied materials
 
-### 3. Build or refresh the wiki map
+### 5. Build or refresh the wiki map
 
 Prefer stable page types over ad-hoc notes:
 - project overview
@@ -214,7 +257,7 @@ Prefer stable page types over ad-hoc notes:
 - troubleshooting pages
 - open questions
 
-### 4. Resolve knowledge-source priority
+### 6. Resolve knowledge-source priority
 
 Before broad retrieval, decide whether the user named a preferred source.
 
@@ -232,7 +275,7 @@ Priority rule:
 
 If a source policy is being recorded, lightweight hints such as `review_cadence` or `supersession_rule` may be added to clarify maintenance expectations.
 
-### 5. Retrieve evidence with the right strategy
+### 7. Retrieve evidence with the right strategy
 
 Use the lightest strategy that is sufficient:
 
@@ -247,7 +290,15 @@ If a preferred knowledge source exists:
 - preserve its terminology and structure when useful
 - only expand outward when its coverage is insufficient
 
-### 6. Synthesize into project-assist output
+### 8. Confirm the route before execution-heavy output
+
+If the user has not yet confirmed the route and the choice would materially change the result:
+- summarize what you understood
+- state the recommended route
+- ask the user to confirm or adjust it
+- do not silently drift into a full answer, build plan, or update plan too early
+
+### 9. Synthesize into project-assist output
 
 Outputs should be shaped for action:
 - explanations
@@ -256,7 +307,7 @@ Outputs should be shaped for action:
 - decision memos
 - wiki build/update plans
 
-### 7. Propose or perform knowledge updates
+### 10. Propose or perform knowledge updates
 
 When appropriate, convert findings into durable knowledge objects:
 - create missing pages
@@ -604,6 +655,12 @@ Read these files when needed:
   - Read when a preferred local knowledge source should shape explanation order or style.
 - `references/system-integration-guidance.md`
   - Read when using Project Wiki as a capability specification inside a future product or platform.
+- `references/project-adaptation-protocol.md`
+  - Read when first entering an unfamiliar project and deciding project type, state, likely sources, and candidate routes.
+- `references/interactive-clarification-guidance.md`
+  - Read when you need to ask the user questions before choosing a route or output artifact.
+- `references/task-routing-guidance.md`
+  - Read when deciding the primary task type for a broad or multi-intent request.
 
 ### Structure and linking guidance
 - `references/wiki-linking.md`
