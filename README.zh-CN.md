@@ -95,6 +95,50 @@ node scripts/install.mjs . --force
 
 注意：虽然 skill 声明了 browser 能力，但默认仍然是 **local-first**。除非你明确授权，或确实需要查询公开外部事实，否则不应把私有项目内容发送到在线搜索或外部 API。
 
+## 标准开场流程（一次正确的首次响应应该是什么样）
+
+`project-wiki` **不是**一次性问答 skill。当你输入像 `请用 project-wiki 解释这个项目` 这种宽泛请求时，正确的首次响应应当走完五个阶段 —— `adapt → clarify → propose → confirm → execute` —— 而不是直接给出一份打磨好的解释。
+
+### 期望的交互形态
+
+```text
+你：
+  请用 project-wiki 解释这个项目。
+
+project-wiki（阶段 1：adapt 项目适配）：
+  项目类型：software_repo（看起来像一个 TypeScript 库）
+  项目状态：partial —— 有 README 和测试，无 docs/wiki 层
+  候选主知识源：src/、README.md、examples/
+  理解缺口：没有 ADR，模块边界不清晰
+
+project-wiki（阶段 2：propose 提出 2-3 条路径）：
+  方案 A —— 先解释：先讲清架构再做任何修改（默认推荐）
+  方案 B —— 建 wiki：在 docs/wiki/ 下搭出 overview + module 页骨架
+  方案 C —— 先评估：评估模块边界与风险
+
+project-wiki（阶段 3：请求确认）：
+  你想走哪条路？对受众/深度有偏好吗？
+
+你：
+  方案 A，目标读者是新维护者。
+
+project-wiki（阶段 4-5：执行所选路径）：
+  [项目解释报告：verified facts、synthesis、
+   evidence anchors、open questions]
+```
+
+### 何时允许跳过某些阶段
+
+- **跳过 adapt**：项目已经熟悉时（如已存在成熟 wiki 且用户问的是聚焦问题）
+- **跳过 clarify**：仅当目标、产出物、知识源、写入意图全部明确
+- **跳过 propose**：仅当用户已显式指定一条路径（如 `/project-wiki build wiki for this project`）
+- **永远不要跳过 confirm**：当所选路径会写入或修改仓库文件时
+
+如需查看完整示例，请参考：
+- `examples/adapt-project-first.md`
+- `examples/interactive-clarification.md`
+- `examples/task-routing-multi-intent.md`
+
 ## 60 秒自检
 
 安装后可以先运行：
@@ -328,45 +372,95 @@ API 是增强层，不是依赖层：
 
 ## Quick Start
 
-如果你第一次使用 `project-wiki`，可以直接从下面几类请求开始。
+如果你第一次使用 `project-wiki`，下面这些 prompt 覆盖了它**全部任务面**——不只是"解释"。
 
-### 1) 先理解项目
+> 对照表：每条 prompt 对应 `contracts/output-contract.schema.json` 中的一个 `task_type`。
+
+### 1) 先适配陌生项目 — `adapt_project`
+
+```text
+请用 project-wiki 先对这个项目做适配：分类项目类型与状态，列出候选主知识源，指出理解缺口，并给出推荐的候选路径——什么都先不要急着输出。
+```
+
+### 2) 意图不清时先提路径 — `propose_options`
+
+```text
+请用 project-wiki 给我 2-3 条最适合这个项目的路径，每条说明 trade-off 并标出默认推荐——先不要落到任何一种产出。
+```
+
+### 3) 理解项目 — `explain`
 
 ```text
 请用 project-wiki 解释这个项目的核心目标、主要模块、关键依赖关系，并列出最重要的 5 个证据文件。
 ```
 
-### 2) 理解某个模块
+### 4) 理解某个模块 — `explain`
 
 ```text
 请用 project-wiki 解释 xxx 模块：它负责什么、依赖什么、边界是否清晰，并把已验证事实、推断、待确认项分开写。
 ```
 
-### 3) 做方案对比
+### 5) 评估设计或边界 — `evaluate`
+
+```text
+请用 project-wiki 评估当前模块边界是否合理：包含 strengths、risks、assumptions、recommendation、confidence。
+```
+
+### 6) 方案对比 — `compare`
 
 ```text
 请用 project-wiki 比较方案 A 和方案 B，优先基于当前仓库的本地证据分析适配度，不要只讲通用最佳实践。
 ```
 
-### 4) 设计项目 wiki
+### 7) 决策支持 — `decide`
+
+```text
+请用 project-wiki 给我一份 decision memo：决策陈述、备选方案、为何选这个、已知 trade-off、证据、还需验证什么。
+```
+
+### 8) 设计或建立项目 wiki — `build_wiki`
 
 ```text
 请用 project-wiki 为这个项目设计一个离线优先的 wiki 结构，要求适合个人先维护，也方便团队后续复用。
 ```
 
-### 5) 安全写入模式
+### 9) 带生命周期字段更新 wiki — `update_wiki`
+
+```text
+请用 project-wiki 针对最近 <模块> 的变化更新 wiki。输出 update_plan 和生命周期字段（review_status、last_reviewed、retention_class，必要时带 supersedes）。在我确认前不要写入。
+```
+
+### 10) 审计知识层质量 — `audit` 模式
+
+```text
+请用 project-wiki 审计当前 wiki：找出弱证据、过期段落、矛盾点、缺失页、坏掉的 `[[wikilinks]]` 和孤立页。
+```
+
+### 11) 整理 / curate wiki 层 — `curate` 模式
+
+```text
+请用 project-wiki 对 wiki 层做一次 curate：收紧页面 scope、改善交叉引用、减少重复、并指出还缺哪些高价值页面。
+```
+
+### 12) 知识库查询并附引用 — `query`
+
+```text
+请用 project-wiki 进入 query 模式：严格基于现有 wiki 页面回答"<你的问题>"，附结构化引用（verified_fact / synthesis / open_question），如果 wiki 没覆盖到，请明确标出 coverage gap。
+```
+
+### 13) 安全写入模式
 
 ```text
 请先给出 wiki 更新计划和目标文件路径，等我确认后再写入具体文档。
 ```
 
-### 6) 指定知识源优先讲解
+### 14) 指定知识源优先讲解 — `source_guided_explain`
 
 ```text
 我在做一个讲解题目的系统，我有一个例题库。请用 project-wiki 讲解这道题时优先调用例题库里的知识，并尽量按例题的思路来讲。
 ```
 
-### 7) 更精准的触发方式
+### 15) 更精准的 source-guided 触发方式 — `source_guided_explain`
 
 ```text
 请用 project-wiki 优先基于例题库讲解这道题。要求：

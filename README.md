@@ -95,6 +95,50 @@ When entering a new or unfamiliar project, the preferred behavior is:
 
 Note: although the skill declares browser capability, the default posture is still **local-first**. Unless you explicitly authorize it, or you truly need public external facts, private project content should not be sent to online search or external APIs.
 
+## Standard Opening Flow (what a correct first response looks like)
+
+`project-wiki` is **not** a one-shot answer skill. When you type a broad request such as `请用 project-wiki 解释这个项目`, a correct first response should walk through five stages — `adapt → clarify → propose → confirm → execute` — instead of jumping straight into a polished explanation.
+
+### Expected interaction shape
+
+```text
+You:
+  请用 project-wiki 解释这个项目。
+
+project-wiki (stage 1: adapt):
+  Project type: software_repo (looks like a TypeScript library)
+  Project state: partial — some README + tests, no docs/wiki layer
+  Likely primary sources: src/, README.md, examples/
+  Gaps in understanding: no ADRs, unclear module boundaries
+
+project-wiki (stage 2: propose 2-3 routes):
+  Option A — Explain first: walk through architecture before changing anything (recommended)
+  Option B — Build wiki: scaffold docs/wiki/ with overview + module pages
+  Option C — Evaluate first: assess module boundaries and risks
+
+project-wiki (stage 3: ask for confirmation):
+  Which route do you want? Any audience/depth preference?
+
+You:
+  Option A, for a new maintainer.
+
+project-wiki (stage 4-5: execute the chosen route):
+  [Project Explanation Report with verified facts, synthesis,
+   evidence anchors, open questions]
+```
+
+### When the skill is allowed to skip stages
+
+- **Skip adapt** when the project is already known (e.g. mature wiki present and the user asks a focused query).
+- **Skip clarify** only when goal, deliverable, source, and write intent are all unambiguous.
+- **Skip propose** only when the user explicitly named one route (e.g. `/project-wiki build wiki for this project`).
+- **Never skip confirm** when the chosen route would write or modify repository files.
+
+If you want this opening flow shown in worked examples, see:
+- `examples/adapt-project-first.md`
+- `examples/interactive-clarification.md`
+- `examples/task-routing-multi-intent.md`
+
 ## 60-Second Self-Check
 
 After installation, you can first run:
@@ -326,45 +370,95 @@ Please use project-wiki to explain this problem primarily based on my example li
 
 ## Quick Start
 
-If you are using `project-wiki` for the first time, you can start directly with the following request types.
+If you are using `project-wiki` for the first time, the prompts below cover the full task surface — not just explanation.
 
-### 1) Understand the project first
+> Reference table: each prompt maps to a `task_type` defined in `contracts/output-contract.schema.json`.
+
+### 1) Adapt to an unfamiliar project — `adapt_project`
+
+```text
+Please use project-wiki to adapt to this project first: classify project type and state, list likely primary sources, surface gaps, and recommend candidate routes before doing anything else.
+```
+
+### 2) Propose options when intent is unclear — `propose_options`
+
+```text
+Please use project-wiki to propose 2-3 best-fit routes for this project. State the trade-off of each and recommend a default — do not commit to one output yet.
+```
+
+### 3) Understand the project — `explain`
 
 ```text
 Please use project-wiki to explain this project's core goals, major modules, and key dependency relationships, and list the 5 most important evidence files.
 ```
 
-### 2) Understand a specific module
+### 4) Understand a specific module — `explain`
 
 ```text
 Please use project-wiki to explain the xxx module: what it is responsible for, what it depends on, whether its boundaries are clear, and separate verified facts, inferences, and items that still need confirmation.
 ```
 
-### 3) Compare solutions
+### 5) Evaluate a design or boundary — `evaluate`
 
 ```text
-Please use project-wiki to compare solution A and solution B, prioritizing fit analysis based on the current repository’s local evidence rather than only giving generic best practices.
+Please use project-wiki to evaluate whether the current module boundaries are reasonable. Include strengths, risks, assumptions, recommendation, and confidence.
 ```
 
-### 4) Design a project wiki
+### 6) Compare solutions — `compare`
+
+```text
+Please use project-wiki to compare solution A and solution B, prioritizing fit analysis based on the current repository's local evidence rather than only giving generic best practices.
+```
+
+### 7) Decision support — `decide`
+
+```text
+Please use project-wiki to produce a decision memo: state the decision, alternatives considered, why this option, known trade-offs, evidence, and what still needs validation.
+```
+
+### 8) Design or build a project wiki — `build_wiki`
 
 ```text
 Please use project-wiki to design an offline-first wiki structure for this project that works well for individual maintenance first and later team reuse.
 ```
 
-### 5) Safe write mode
+### 9) Update an existing wiki with lifecycle metadata — `update_wiki`
+
+```text
+Please use project-wiki to update the wiki for the recent <module> changes. Output an update_plan plus lifecycle fields (review_status, last_reviewed, retention_class, supersedes if applicable). Wait for my confirmation before writing.
+```
+
+### 10) Audit knowledge quality — `audit` mode
+
+```text
+Please use project-wiki to audit the current wiki: find weakly supported claims, stale sections, contradictions, missing pages, broken `[[wikilinks]]`, and orphan pages.
+```
+
+### 11) Curate the wiki layer — `curate` mode
+
+```text
+Please use project-wiki to curate the wiki: tighten page scope, improve cross-references, reduce duplication, and identify high-value pages still missing.
+```
+
+### 12) Query the knowledge base with citations — `query`
+
+```text
+Please use project-wiki in query mode: answer "<your question>" strictly from the existing wiki pages, attach structured citations (verified_fact / synthesis / open_question), and explicitly mark coverage if the wiki does not cover the question.
+```
+
+### 13) Safe write mode
 
 ```text
 Please first provide the wiki update plan and the target file paths, and wait for my confirmation before writing any actual documents.
 ```
 
-### 6) Explain with a specified knowledge source priority
+### 14) Explain with a specified knowledge source priority — `source_guided_explain`
 
 ```text
-I am building a system for explaining problems, and I have an example library. Please use project-wiki to explain this problem by prioritizing knowledge from the example library and following the example’s reasoning style as much as possible.
+I am building a system for explaining problems, and I have an example library. Please use project-wiki to explain this problem by prioritizing knowledge from the example library and following the example's reasoning style as much as possible.
 ```
 
-### 7) A more precise trigger style
+### 15) A more precise source-guided trigger style — `source_guided_explain`
 
 ```text
 Please use project-wiki to explain this problem based primarily on the example library. Requirements:

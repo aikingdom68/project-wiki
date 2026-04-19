@@ -1,10 +1,13 @@
 ---
 name: project-wiki
-version: 0.4.0
+version: 0.5.0
 author: KimYx0207
 user-invocable: true
 trigger: "项目解释|项目评估|方案对比|技术选型|决策支持|知识库|项目知识库|项目wiki|wiki更新|模块说明|架构说明|新成员上手|ADR|项目文档整理|代码库理解|本地RAG|离线知识库|LLM Wiki|project explanation|project evaluation|decision support|knowledge base|project wiki|architecture explanation|module explanation|trade-off analysis|local rag|llm wiki"
 tools:
+  # `browser` is declared but NOT used by default. Project Wiki is local-first:
+  # browser is only activated when the user explicitly authorizes online augmentation
+  # (Mode B / Hybrid). See "Mode Selection" and `references/modes-and-safety.md`.
   - shell
   - filesystem
   - browser

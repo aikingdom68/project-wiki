@@ -16,6 +16,7 @@
       "type": "string",
       "enum": [
         "software_repo",
+        "skill_repo",
         "teaching_system",
         "documentation_kb",
         "saas_kb",
