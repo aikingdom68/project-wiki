@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.5.1] - 2026-04-22
 
 ### Added
 - Root-level `test-prompts.json` with reusable regression prompts covering adaptation-first entry, explanation, comparison, source-guided explanation, and lifecycle-aware wiki updates
