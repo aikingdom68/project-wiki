@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Root-level `test-prompts.json` with reusable regression prompts covering adaptation-first entry, explanation, comparison, source-guided explanation, and lifecycle-aware wiki updates
+- Install test coverage for publishing `test-prompts.json` as part of the standalone skill package
+
+### Changed
+- `SKILL.md` frontmatter now uses a quoted `description` value for better skill health compatibility
+- `SKILL.md` now surfaces an activation snapshot and default opening route near the top for faster, more reliable triggering
+- README, README.zh-CN, publishing notes, install script, and doctor checks now treat `test-prompts.json` as a first-class asset
+- Doctor tests now validate `test-prompts.json` presence and JSON validity
+
 ## [0.5.0] - 2026-04-19
 
 ### Added

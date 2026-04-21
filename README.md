@@ -64,6 +64,7 @@ The final structure should look like:
   RELEASE.md
   PUBLISHING.md
   ROADMAP.md
+  test-prompts.json
   contracts/
   references/
   examples/
@@ -173,6 +174,7 @@ Please use project-wiki to explain this project.
    - it emphasizes the project knowledge layer more than generic search
    - it emphasizes evidence, pages, structure, and gaps
    - it does not collapse into generic repo chat
+5. Reuse `test-prompts.json` when you want a small regression prompt set for manual validation.
 
 Note: this `doctor` command is primarily for **repository integrity / installation file completeness checks**. It helps confirm that the skill file set is complete, but it is not a substitute for real prompt testing.
 

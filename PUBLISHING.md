@@ -12,6 +12,7 @@ Only publish the contents of this repository:
 - `RELEASE.md`
 - `PUBLISHING.md`
 - `ROADMAP.md`
+- `test-prompts.json`
 - `contracts/`
 - `references/`
 - `examples/`

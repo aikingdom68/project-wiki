@@ -12,6 +12,7 @@ const requiredFiles = [
   "RELEASE.md",
   "PUBLISHING.md",
   "ROADMAP.md",
+  "test-prompts.json",
   "contracts/source-policy.schema.json",
   "contracts/source-policy-list.schema.json",
   "contracts/output-contract.schema.json",
@@ -64,6 +65,7 @@ const requiredFiles = [
 ];
 
 const jsonFiles = [
+  "test-prompts.json",
   "contracts/source-policy.schema.json",
   "contracts/source-policy-list.schema.json",
   "contracts/output-contract.schema.json",
@@ -213,6 +215,9 @@ for (const rel of jsonFiles) {
   try {
     const parsed = parseJsonFile(rel);
     parsedJson.set(normalizeSlashes(rel), parsed);
+    if (normalizeSlashes(rel) === "test-prompts.json") {
+      validateTestPrompts(rel, parsed);
+    }
     if (normalizeSlashes(rel).startsWith("evals/cases/")) {
       validateEvalCase(rel, parsed);
     }
@@ -247,6 +252,38 @@ function parseJsonFile(rel) {
     return JSON.parse(readText(rel));
   } catch (error) {
     throw new Error(`INVALID_JSON: ${rel}: ${error.message}`);
+  }
+}
+
+function validateTestPrompts(rel, value) {
+  if (!Array.isArray(value) || value.length === 0) {
+    fail(`INVALID_TEST_PROMPTS: ${rel}: root must be a non-empty array`);
+    return;
+  }
+
+  for (const [index, item] of value.entries()) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      fail(`INVALID_TEST_PROMPTS: ${rel}: item[${index}] must be an object`);
+      continue;
+    }
+
+    if (!isNonEmptyString(item.id)) {
+      fail(
+        `INVALID_TEST_PROMPTS: ${rel}: item[${index}].id must be a non-empty string`,
+      );
+    }
+
+    if (!isNonEmptyString(item.prompt)) {
+      fail(
+        `INVALID_TEST_PROMPTS: ${rel}: item[${index}].prompt must be a non-empty string`,
+      );
+    }
+
+    if (!isNonEmptyString(item.expected)) {
+      fail(
+        `INVALID_TEST_PROMPTS: ${rel}: item[${index}].expected must be a non-empty string`,
+      );
+    }
   }
 }
 
@@ -388,6 +425,7 @@ function validateInstallWhitelist() {
     "RELEASE.md",
     "PUBLISHING.md",
     "ROADMAP.md",
+    "test-prompts.json",
     "contracts",
     "references",
     "examples",

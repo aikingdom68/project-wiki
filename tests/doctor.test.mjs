@@ -21,6 +21,18 @@ const requiredFiles = {
   "RELEASE.md": "# release\n",
   "PUBLISHING.md": "# publishing\n",
   "ROADMAP.md": "# roadmap\n",
+  "test-prompts.json": JSON.stringify(
+    [
+      {
+        id: "project-explanation-basic",
+        prompt:
+          "请用 project-wiki 解释这个项目的核心架构，并指出最关键的 5 个文件或页面证据。",
+        expected: "给出项目解释结构并附证据锚点。",
+      },
+    ],
+    null,
+    2,
+  ),
   "contracts/source-policy.schema.json": JSON.stringify(
     {
       type: "object",
@@ -194,7 +206,7 @@ const requiredFiles = {
     "# Example: Wiki Lifecycle Update\n\n- review_status\n- consolidation_status\n- supersedes\n",
   "scripts/doctor.mjs": "#!/usr/bin/env node\n",
   "scripts/install.mjs":
-    '#!/usr/bin/env node\nconst whitelist = ["SKILL.md", "README.md", "README.zh-CN.md", "LICENSE", "CHANGELOG.md", "RELEASE.md", "PUBLISHING.md", "ROADMAP.md", "contracts", "references", "examples", "scripts", "evals"];\n',
+    '#!/usr/bin/env node\nconst whitelist = ["SKILL.md", "README.md", "README.zh-CN.md", "LICENSE", "CHANGELOG.md", "RELEASE.md", "PUBLISHING.md", "ROADMAP.md", "test-prompts.json", "contracts", "references", "examples", "scripts", "evals"];\n',
   "evals/README.md":
     "# Eval Cases\n\n- lifecycle\n- knowledge-lifecycle\n- project adaptation\n- clarification\n- route options\n",
   "evals/cases/source-guided-example-bank.json": JSON.stringify(
@@ -335,6 +347,23 @@ test("doctor fails when the Chinese README is missing", () => {
   const result = runDoctor(root);
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(result.stderr, /README\.zh-CN\.md/i);
+});
+
+test("doctor fails when test-prompts.json is missing", () => {
+  const root = makeFixture();
+  fs.rmSync(path.join(root, "test-prompts.json"));
+  const result = runDoctor(root);
+  assert.notEqual(result.status, 0, result.stdout);
+  assert.match(result.stderr, /test-prompts\.json/i);
+});
+
+test("doctor fails when test-prompts.json is malformed", () => {
+  const root = makeFixture({
+    "test-prompts.json": "{ invalid json }\n",
+  });
+  const result = runDoctor(root);
+  assert.notEqual(result.status, 0, result.stdout);
+  assert.match(result.stderr, /test-prompts\.json/i);
 });
 
 test("doctor fails when an eval JSON file is malformed", () => {

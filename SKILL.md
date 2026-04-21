@@ -12,8 +12,7 @@ tools:
   - filesystem
   - browser
   - memory
-description: |
-  Use when the user wants to explain a project, evaluate or compare technical options, build or update a project knowledge base/wiki, or answer project questions with evidence from local materials. Also use when the user wants explanations to prioritize a specific local knowledge source, such as an example bank, lecture notes, docs, or a curated local corpus, and follow that source's reasoning style before falling back to general knowledge.
+description: "Use when the user wants to explain a project, evaluate or compare technical options, build or update a project knowledge base/wiki, or answer project questions with evidence from local materials. Also use when the user wants explanations to prioritize a specific local knowledge source, such as an example bank, lecture notes, docs, or a curated local corpus, and follow that source's reasoning style before falling back to general knowledge."
 ---
 
 # Project Wiki
@@ -28,6 +27,23 @@ The core worldview is:
 - **Local RAG is the evidence layer** — retrieval supports pages and judgments, but does not replace them.
 - **Project assistance is the product goal** — explanations, comparisons, decision memos, onboarding, and knowledge updates.
 - **Lifecycle fields are support metadata** — they clarify review state, retention, consolidation, and supersession without changing the wiki-first/local-first posture.
+
+## Activation Snapshot
+
+Use this skill when all four signals line up:
+- the user wants project explanation, evaluation, comparison, or wiki work
+- the answer should be grounded in local project materials
+- the result should strengthen a durable knowledge layer, not just a one-off reply
+- repository changes, if any, should follow an explicit confirmation step
+
+Strong trigger:
+- the user names a preferred local source such as docs/wiki, lecture notes, or an example bank, and wants the explanation to follow that source before falling back
+
+Default posture:
+- local-first
+- evidence-first
+- pages before chats
+- confirm before writes or route-changing output
 
 ## When to Use
 
@@ -148,6 +164,16 @@ For most users, three entry patterns are enough:
    - `请用 project-wiki 为这个项目建立或更新 wiki。`
 3. **Explain using a preferred knowledge source**
    - `请用 project-wiki 优先根据我的例题库讲解这道题，并按例题思路来讲。`
+
+## Default Opening Route
+
+Unless the request is already narrow and explicit, prefer this sequence:
+
+1. **adapt** — classify project type/state and likely sources
+2. **clarify** — ask the minimum questions needed to avoid a wrong route
+3. **propose** — offer 2-3 routes with trade-offs and a default recommendation
+4. **confirm** — lock the route before write-heavy or execution-heavy output
+5. **execute** — produce the chosen explanation, evaluation, comparison, or wiki plan
 
 ## Triggering Modes
 
@@ -825,7 +851,7 @@ For MVP, prefer a small set of page types:
 
 ## Manual Validation Prompts
 
-Use prompts like these to test the skill:
+For reusable regression prompts, see `test-prompts.json`. Use prompts like these to test the skill:
 
 1. `请解释这个项目的核心架构，并指出最关键的 5 个文件或页面证据。`
 2. `请比较两种方案，并基于本地项目证据给出推荐，不要只给泛泛最佳实践。`

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "adapt-project-first",
+    "prompt": "请用 project-wiki 解释这个项目。",
+    "expected": "先做项目适配并提出候选路径，而不是直接进入完整解释。"
+  },
+  {
+    "id": "project-explanation-basic",
+    "prompt": "请用 project-wiki 解释这个项目的核心架构，并指出最关键的 5 个文件或页面证据。",
+    "expected": "给出项目解释结构、明确证据锚点，并在不确定时标出 open questions。"
+  },
+  {
+    "id": "compare-options-local-evidence",
+    "prompt": "请比较两种方案，并基于本地项目证据给出推荐，不要只给泛泛最佳实践。",
+    "expected": "优先基于本地证据做对比与推荐，显式说明假设、风险与待验证项。"
+  },
+  {
+    "id": "source-guided-example-bank",
+    "prompt": "我在做一个讲解题目的系统，我有一个例题库。请用 project-wiki 讲解这道题时优先调用例题库里的知识，并尽量按例题的思路来讲。",
+    "expected": "识别例题库为主知识源，尽量沿用其讲解顺序，并区分来源内推理与补充说明。"
+  },
+  {
+    "id": "wiki-lifecycle-update",
+    "prompt": "请用 project-wiki 针对最近 auth 模块的变化更新 wiki。先输出 update_plan 和必要的生命周期字段，等我确认后再写入。",
+    "expected": "先给出 update_plan 与生命周期字段，不应在未确认前直接修改仓库。"
+  }
+]

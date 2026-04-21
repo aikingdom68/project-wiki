@@ -64,6 +64,7 @@ node scripts/install.mjs . --force
   RELEASE.md
   PUBLISHING.md
   ROADMAP.md
+  test-prompts.json
   contracts/
   references/
   examples/
@@ -173,6 +174,7 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
    - 更强调项目知识层，而不是普通搜索
    - 更强调证据、页面、结构、缺口
    - 不会直接退化成泛泛的 repo chat
+5. 如果你想做一组小型回归测试，可直接复用仓库根目录的 `test-prompts.json`。
 
 说明：这个 `doctor` 更偏向**仓库完整性 / 安装文件完整性检查**。它能帮助你确认 skill 文件集是否齐全，但并不能替代真实 prompt 测试。
 

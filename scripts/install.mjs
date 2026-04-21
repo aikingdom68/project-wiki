@@ -32,6 +32,7 @@ const whitelist = [
   "RELEASE.md",
   "PUBLISHING.md",
   "ROADMAP.md",
+  "test-prompts.json",
   "contracts",
   "references",
   "examples",
@@ -77,6 +78,7 @@ assertFileExists("CHANGELOG.md");
 assertFileExists("RELEASE.md");
 assertFileExists("PUBLISHING.md");
 assertFileExists("ROADMAP.md");
+assertFileExists("test-prompts.json");
 assertFileExists("contracts");
 assertFileExists("references");
 assertFileExists("examples");
