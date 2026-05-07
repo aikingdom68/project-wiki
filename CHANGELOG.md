@@ -21,18 +21,18 @@ It is also the version where the Skill admits that the docs themselves are part 
   - an extension pattern for adding `wiki_replace` / `wiki_create` editing capability through `safe-write.mjs` rather than a new endpoint
   - a diagnostic quick-reference table mapping symptom → cause → fix
 - `scripts/lib/runtime-config.mjs` and `scripts/lib/safe-write.mjs` extracted as shared helpers, now reused by `healthcheck.mjs`, `admin.mjs`, and the P4.x planners. New tests at `tests/safe-write.test.mjs`.
-- Two repository-root research notes (`local-kb-admin-gui-and-claude-obsidian-analysis.md`, `meta-kim-memory-and-project-wiki-analysis.md`) promoted to first-class publishable resources next to `SKILL.md` and `references/`.
+- Two repository-root research notes (`local-kb-admin-gui-and-claude-obsidian-analysis.md`, `meta-memory-and-project-wiki-analysis.md`) promoted to first-class publishable resources next to `SKILL.md` and `references/`.
 
 ### Changed
 - `SKILL.md` `version` field bumped to `0.7.0`. The Admin GUI route (Route 8) now requires reading `references/admin-gui-frontend-playbook.md` before any HTML/CSS/JS work, in addition to `references/admin-gui-contract.md`.
-- README.md and README.zh-CN.md now open with a 30-second hackathon pitch and a one-line demo prompt before the long-form documentation, then keep the existing platform-spec depth below.
+- README.md and README.zh-CN.md now open with a 30-second elevator pitch and a one-line demo prompt before the long-form documentation, then keep the existing platform-spec depth below.
 - Both READMEs now reference `admin-gui-frontend-playbook.md` in their main-file inventory; the Chinese inventory previously skipped it.
 - ROADMAP.md and RELEASE.md now treat v0.7.0 as the current state.
 - PUBLISHING.md adds the two analysis docs to the publish set.
 
 ### Decided
 - The Admin GUI is **part** of the product, not a follow-on. The frontend playbook lives next to the API contract; both must be read before building, redoing, or polishing the GUI.
-- The two analysis documents stay at the repo root rather than being moved into a subdirectory. They document the reasoning behind structural decisions and are exactly the kind of artifact a hackathon reviewer (or a future maintainer) reads cold.
+- The two analysis documents stay at the repo root rather than being moved into a subdirectory. They document the reasoning behind structural decisions and are exactly the kind of artifact a reviewer or future maintainer reads cold.
 
 ### Still out of scope
 - Arbitrary wiki CRUD. `wiki_replace` / `wiki_create` are documented as an **extension pattern** in the playbook, not delivered as a default capability of `safe-write.mjs` in this release.

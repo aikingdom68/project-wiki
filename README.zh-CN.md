@@ -38,7 +38,7 @@
 
 ## 它凭什么值得收藏
 
-这是一个参赛作品，所以电梯版立场写在这里：
+电梯版立场如下：
 
 1. **wiki 才是产品，retrieval 只是证人。** 你保留下来的是 Markdown 页面，不是聊天记录。新人即使没有 LLM 也能读懂。
 2. **本地真相高于一般最佳实践。** 当你的仓库与互联网冲突时，仓库赢。当你的教材与通用 LLM 冲突时，教材赢。
@@ -768,7 +768,7 @@ node scripts/admin.mjs <target-project> --port 0
 仓库根目录附带两份分析文档。它们不是使用本 skill 的必读材料，但记录了当前设计背后的思路 —— 适合在审阅、Fork 或想理解"为什么是这个样子"时阅读：
 
 - [`local-kb-admin-gui-and-claude-obsidian-analysis.md`](local-kb-admin-gui-and-claude-obsidian-analysis.md) —— 本地 KB Admin GUI 模式分析与 `claude-obsidian` 工作流思路对照，是 P2/P3 Admin GUI 契约和 v0.7.0 Frontend Playbook 的素材来源。
-- [`meta-kim-memory-and-project-wiki-analysis.md`](meta-kim-memory-and-project-wiki-analysis.md) —— 长寿命 memory/持久化系统分析，以及 project-wiki 的持久知识层与 agent 风格 memory 的差别，是生命周期词汇与 wiki-vs-RAG 立场的来源。
+- [`meta-memory-and-project-wiki-analysis.md`](meta-memory-and-project-wiki-analysis.md) —— 长寿命 memory/持久化系统分析，以及 project-wiki 的持久知识层与 agent 风格 memory 的差别，是生命周期词汇与 wiki-vs-RAG 立场的来源。
 
 ## License
 

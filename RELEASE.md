@@ -7,8 +7,8 @@
 ### What's new in v0.7.0
 - **Frontend Playbook** — `references/admin-gui-frontend-playbook.md`, the implementation companion to `admin-gui-contract.md`. CSP/embedding constraints, OKLCH color tokens, system-font stacks, the AI-slop ban list, plain-language vocabulary mapping for non-technical users, the 6-route page architecture, the fit-to-bounds rescaling step that prevents force-layout graphs from collapsing into one corner, an editing extension pattern for `wiki_replace` / `wiki_create`, and a symptom→cause→fix diagnostic table.
 - **Shared runtime helpers** — `scripts/lib/runtime-config.mjs` and `scripts/lib/safe-write.mjs` extracted from inline implementations and reused by `healthcheck.mjs`, `admin.mjs`, and the P4.x planners. Backed by `tests/safe-write.test.mjs`.
-- **Hackathon-ready READMEs** — both READMEs now lead with a 30-second pitch and a one-line demo prompt before the long-form documentation.
-- **Research notes promoted** — `local-kb-admin-gui-and-claude-obsidian-analysis.md` and `meta-kim-memory-and-project-wiki-analysis.md` are now part of the published asset set.
+- **Pitch-ready READMEs** — both READMEs now lead with a 30-second pitch and a one-line demo prompt before the long-form documentation.
+- **Research notes promoted** — `local-kb-admin-gui-and-claude-obsidian-analysis.md` and `meta-memory-and-project-wiki-analysis.md` are now part of the published asset set.
 - Chinese README main-file inventory aligned with the English version (the Chinese list previously skipped `admin-gui-frontend-playbook`).
 
 ### Still out of scope in v0.7.0

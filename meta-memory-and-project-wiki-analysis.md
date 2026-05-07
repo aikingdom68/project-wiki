@@ -1,12 +1,12 @@
-# Project Wiki 与 Meta_Kim 记忆结构分析
+# Project Wiki 与 Meta 记忆结构分析
 
-> 目的：解释 Meta_Kim 的“三层记忆”到底是什么，它的项目逻辑是什么，以及 `project-wiki` 和你的 C/C++ 教学知识库可以借鉴哪些点。
+> 目的：解释 Meta 的“三层记忆”到底是什么，它的项目逻辑是什么，以及 `project-wiki` 和你的 C/C++ 教学知识库可以借鉴哪些点。
 
 ---
 
 ## 1. 先说结论
 
-Meta_Kim 的“三层记忆”本质不是神秘技术，而是：
+Meta 的“三层记忆”本质不是神秘技术，而是：
 
 ```text
 目录 → 分类正文 → 旧资料归档
@@ -39,9 +39,9 @@ Meta_Kim 的“三层记忆”本质不是神秘技术，而是：
 
 ---
 
-## 2. Meta_Kim 的“三层记忆”到底是什么？
+## 2. Meta 的“三层记忆”到底是什么？
 
-Meta_Kim 的记忆系统，本质上是在解决一个问题：
+Meta 的记忆系统，本质上是在解决一个问题：
 
 > Claude / Agent 做完一堆事以后，下一次重新打开，怎么快速知道“我之前做到哪了、什么重要、什么可以忘掉”？
 
@@ -53,7 +53,7 @@ Meta_Kim 的记忆系统，本质上是在解决一个问题：
 
 ## 3. 第一套核心三层：Index / Topic / Archive
 
-Meta_Kim 的 `meta-librarian` 里有一套三层结构：
+Meta 的 `meta-librarian` 里有一套三层结构：
 
 ```text
 ┌────────────────────────────┐
@@ -117,7 +117,7 @@ Archive = 旧资料仓库
 
 ---
 
-## 5. Meta_Kim 的写入流程
+## 5. Meta 的写入流程
 
 它大概是这样：
 
@@ -161,7 +161,7 @@ Archive = 旧资料仓库
 
 ---
 
-## 6. Meta_Kim 的读取流程
+## 6. Meta 的读取流程
 
 下次 Agent 醒来，它不是全库乱搜，而是：
 
@@ -208,7 +208,7 @@ Archive = 旧资料仓库
 
 ---
 
-## 7. Meta_Kim 里的另一套 Memory/RAG 逻辑
+## 7. Meta 里的另一套 Memory/RAG 逻辑
 
 你项目里还有一个文件：
 
@@ -280,9 +280,9 @@ Archive = 很旧但不想彻底删的东西
 
 ---
 
-## 8. Meta_Kim 的项目逻辑到底是什么？
+## 8. Meta 的项目逻辑到底是什么？
 
-Meta_Kim 不是普通软件，它更像一个：
+Meta 不是普通软件，它更像一个：
 
 ```text
 Claude Code 多 Agent 治理系统
@@ -315,7 +315,7 @@ meta-artisan     配技能
 
 ---
 
-## 9. Meta_Kim 记忆系统的真实目的
+## 9. Meta 记忆系统的真实目的
 
 它不是为了学生问问题。
 
@@ -447,11 +447,11 @@ data/knowledge-base/
 
 ---
 
-## 12. 你的项目能借鉴 Meta_Kim 哪些点？
+## 12. 你的项目能借鉴 Meta 哪些点？
 
 ### 12.1 借鉴点一：目录层不要放正文
 
-Meta_Kim 的 `MEMORY.md` 只做索引，不塞大量正文。
+Meta 的 `MEMORY.md` 只做索引，不塞大量正文。
 
 你项目可以借鉴：
 
@@ -466,7 +466,7 @@ kb-catalog.json 不应该放大量解释
 对应关系：
 
 ```text
-Meta_Kim MEMORY.md
+Meta MEMORY.md
     ↓
 你的 kb-catalog.json
 ```
@@ -475,7 +475,7 @@ Meta_Kim MEMORY.md
 
 ### 12.2 借鉴点二：主题层才是真正知识
 
-Meta_Kim 的 topic 文件才放真正内容。
+Meta 的 topic 文件才放真正内容。
 
 你的项目对应：
 
@@ -491,7 +491,7 @@ cpp-tutorial/examples.md
 对应关系：
 
 ```text
-Meta_Kim topic files
+Meta topic files
     ↓
 你的 cpp-tutorial/*.md
 ```
@@ -500,7 +500,7 @@ Meta_Kim topic files
 
 ### 12.3 借鉴点三：归档层保留原始证据
 
-Meta_Kim 的 archive 是旧资料仓库。
+Meta 的 archive 是旧资料仓库。
 
 你的项目不是简单 archive，而是：
 
@@ -521,7 +521,7 @@ source-map
 对应关系：
 
 ```text
-Meta_Kim archive
+Meta archive
     ↓
 你的 c-tutorial/pages + PDF + source-map
 ```
@@ -530,7 +530,7 @@ Meta_Kim archive
 
 ### 12.4 借鉴点四：不是所有东西都永久放主知识库
 
-Meta_Kim 很强调“过期策略”。
+Meta 很强调“过期策略”。
 
 你的项目也需要区分：
 
@@ -561,7 +561,7 @@ data/memory/learning-feedback/
 
 ### 12.5 借鉴点五：冷启动恢复
 
-Meta_Kim 讲“30 秒恢复工作状态”。
+Meta 讲“30 秒恢复工作状态”。
 
 你的项目也可以借鉴：
 
@@ -607,7 +607,7 @@ retrieval-presets.json
 
 ### 13.2 不能照搬 7 天过期规则
 
-Meta_Kim 说 session notes 7 天过期。
+Meta 说 session notes 7 天过期。
 
 但你的教材知识不能这么搞。
 
@@ -636,7 +636,7 @@ API 生成解释：先临时保存，验证后再进入知识库
 
 ### 13.3 不能照搬 Agent 工作流状态
 
-Meta_Kim 记的是：
+Meta 记的是：
 
 ```text
 哪个 Agent 做了什么
@@ -1144,7 +1144,7 @@ data/knowledge-base/review-log.md
               archive
 ```
 
-这部分就是你从 Meta_Kim 记忆系统里最值得借鉴的点。
+这部分就是你从 Meta 记忆系统里最值得借鉴的点。
 
 ---
 
@@ -1222,7 +1222,7 @@ small project, software repo, teaching system, document corpus, AI knowledge app
 
 ### 第三优先级：做 C/C++ 教学系统真实 demo
 
-比赛最强 demo 应该是：
+最强 demo 应该是：
 
 ```text
 输入：一个 C/C++ 教学系统
@@ -1297,13 +1297,13 @@ common-errors / topics 正文 > glossary > index > open questions
 3. 做 C/C++ 教学系统真实 demo
 ```
 
-这三个最能提升参赛表现。
+这三个最能提升整体表现。
 
 ---
 
 ## 23. 一句话总结
 
-Meta_Kim 的三层记忆本质是：
+Meta 的三层记忆本质是：
 
 ```text
 目录 → 分类正文 → 旧资料归档
@@ -1338,4 +1338,4 @@ Agent 恢复工作状态
 反馈进化层
 ```
 
-这才是你的项目最值得借鉴 Meta_Kim 的地方。
+这才是你的项目最值得借鉴 Meta 的地方。

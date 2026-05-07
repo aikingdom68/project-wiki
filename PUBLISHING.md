@@ -15,7 +15,7 @@ Only publish the contents of this repository:
 - `ROADMAP.md`
 - `test-prompts.json`
 - `local-kb-admin-gui-and-claude-obsidian-analysis.md` *(research/analysis docs at repo root)*
-- `meta-kim-memory-and-project-wiki-analysis.md` *(research/analysis docs at repo root)*
+- `meta-memory-and-project-wiki-analysis.md` *(research/analysis docs at repo root)*
 - `contracts/`
 - `references/`
 - `examples/`
@@ -25,7 +25,7 @@ Only publish the contents of this repository:
 
 Do **not** mix files from other workspaces or upstream repositories into this repository unless explicitly copied in as part of a later release process.
 
-The two repo-root analysis documents are first-class published resources from v0.7.0 onward — they document the reasoning behind several design decisions and are useful reading for reviewers (including hackathon judges) opening the repo cold.
+The two repo-root analysis documents are first-class published resources from v0.7.0 onward — they document the reasoning behind several design decisions and are useful reading for reviewers opening the repo cold.
 
 ## Recommended next publishing steps
 1. Review repository contents

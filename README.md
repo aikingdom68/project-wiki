@@ -38,7 +38,7 @@ That is the entire point. The output you keep is a wiki page — not a chat repl
 
 ## Why it might win you over
 
-This is a hackathon project, so the elevator version:
+The elevator version goes like this:
 
 1. **Wiki is the product, retrieval is a witness.** The artifact you keep is a Markdown page, not a chat log. A new teammate can read it without an LLM.
 2. **Local truth outranks global best practice.** When your repo and the internet disagree, the repo wins. When your textbook and a generic LLM disagree, the textbook wins.
@@ -766,7 +766,7 @@ This skill is designed to be:
 The repository ships with two analysis documents at the root level. They are not required reading to use the skill, but they document the reasoning that shaped the current design — useful if you are reviewing this project, forking it, or just want to understand why things are the way they are:
 
 - [`local-kb-admin-gui-and-claude-obsidian-analysis.md`](local-kb-admin-gui-and-claude-obsidian-analysis.md) — analysis of local KB admin GUI patterns and a comparison with the `claude-obsidian` workflow ideas, informing the P2/P3 Admin GUI contract and the v0.7.0 Frontend Playbook.
-- [`meta-kim-memory-and-project-wiki-analysis.md`](meta-kim-memory-and-project-wiki-analysis.md) — analysis of long-lived memory/persistence systems and how project-wiki's durable knowledge layer differs from agent-style memory, informing the lifecycle vocabulary and the wiki-vs-RAG positioning.
+- [`meta-memory-and-project-wiki-analysis.md`](meta-memory-and-project-wiki-analysis.md) — analysis of long-lived memory/persistence systems and how project-wiki's durable knowledge layer differs from agent-style memory, informing the lifecycle vocabulary and the wiki-vs-RAG positioning.
 
 ## License
 
