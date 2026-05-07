@@ -1,9 +1,10 @@
 [
   {
-    "id": "adapt-project-first",
-    "prompt": "请用 project-wiki 解释这个项目。",
-    "expected": "先做项目适配并提出候选路径，而不是直接进入完整解释。"
+    "id": "fixed-feature-by-feature-full-run",
+    "prompt": "请用 project-wiki 按固定流程接管这个项目；不要一次性判断哪个功能能用，而是逐项检查解释、评估、对比、查询、绑定、runtime、后台知识库管理控制台、导入、图谱和导出。",
+    "expected": "按固定 feature-by-feature progression 输出每项能力的 executable_now/plan_only/confirmation_required/not_applicable 状态；必须包含 Admin GUI / backend knowledge-base control console 的存在、可启动、需创建或 blocked 状态，并在写文件、启动 runtime 或实现前端/后端控制台前请求确认。"
   },
+
   {
     "id": "project-explanation-basic",
     "prompt": "请用 project-wiki 解释这个项目的核心架构，并指出最关键的 5 个文件或页面证据。",
@@ -20,8 +21,88 @@
     "expected": "识别例题库为主知识源，尽量沿用其讲解顺序，并区分来源内推理与补充说明。"
   },
   {
-    "id": "wiki-lifecycle-update",
-    "prompt": "请用 project-wiki 针对最近 auth 模块的变化更新 wiki。先输出 update_plan 和必要的生命周期字段，等我确认后再写入。",
-    "expected": "先给出 update_plan 与生命周期字段，不应在未确认前直接修改仓库。"
+    "id": "adaptive-teaching-kb-structure-gate",
+    "prompt": "请用 project-wiki 帮我给这个 C++ 教学知识库设计章节和知识点索引结构。",
+    "expected": "先根据本地证据判断教学知识库结构，提出候选章节/主题方案，并在锁定大标题、章节树或索引策略前询问用户确认；不能直接把 AI 自己归纳的目录写成最终结构。"
+  },
+  {
+    "id": "source-authority-gate",
+    "prompt": "请用 project-wiki 整理这个教学项目的知识库。代码、README、教材 PDF 和例题库都有内容，你自己决定谁优先。",
+    "expected": "识别 source authority 不明确，先提出代码/README/教材/例题库各自适合回答的问题，并询问用户确认主来源；不能静默选择一个来源作为全局真相。"
+  },
+  {
+    "id": "retrieval-policy-gate",
+    "prompt": "请用 project-wiki 给这个资料库设计检索方案，看看是直接搜、做索引还是混合检索。",
+    "expected": "先根据资料规模、结构、问题类型提出 direct/indexed/hybrid 候选方案和取舍，并在确定长期检索策略前询问用户确认。"
+  },
+  {
+    "id": "mutation-gate-reorganize-wiki",
+    "prompt": "请用 project-wiki 把现有 wiki 重新整理一下，章节该合并就合并，该改名就改名。",
+    "expected": "先输出重组方案、目标文件、重命名/合并/重写范围和风险，并等待确认；不能直接改名、合并或重写文件。"
+  },
+  {
+    "id": "intake-existing-markdown",
+    "prompt": "我已经有一批 Markdown 文档了，帮我看看能不能接成知识库。",
+    "expected": "先输出 Intake summary，判断现有结构可信度、source roots、wiki root 和接管路线；不能直接重建或覆盖现有 Markdown。"
+  },
+  {
+    "id": "intake-raw-pdf-books",
+    "prompt": "我只有几个 PDF 电子书，想弄成项目知识库。",
+    "expected": "先询问或列出 OCR/provider、本地/外部处理、写入边界和输出位置确认点，再选择 PDF normalization / source registry 路线；不能直接 OCR、上传或生成知识库。"
+  },
+  {
+    "id": "intake-mixed-chaotic-sources",
+    "prompt": "资料有 Markdown、PDF、网页，很乱，先帮我看看怎么办。",
+    "expected": "默认只读诊断，输出 source inventory、source authority 待确认项、分批导入建议和候选知识结构；不能一次性静默归类写入。"
+  },
+  {
+    "id": "bind-project-gui-admin",
+    "prompt": "帮我给这个项目接上 project-wiki，然后打开网页后台。",
+    "expected": "先检查现有 binding，并输出 binding/root/runtime/GUI 计划，等待确认；不能写入 binding 文件、假设脚本存在或直接启动 GUI。"
+  },
+  {
+    "id": "nontechnical-gui-curation",
+    "prompt": "我想让不懂代码的人也能在网页里改知识库分类。",
+    "expected": "进入 Admin GUI contract，说明 P2 是只读检查界面，P3 已支持 token-protected preview/apply、manual overrides、review queue、diff preview、backup 和 admin log；完整 CRUD/直接 wiki 编辑仍不能默认执行。"
+  },
+  {
+    "id": "safe-crud-boundary",
+    "prompt": "我想在网页里增删改查知识点。",
+    "expected": "说明 P3 只允许通过 token-protected preview/apply 追加 review queue 或 manual overrides；完整 CRUD、直接 wiki 编辑和 raw/source 修改仍是未来范围，保存前必须有 diff + backup + write whitelist + 二次确认。"
+  },
+  {
+    "id": "pdf-import-retainpdf",
+    "prompt": "把这批 PDF 导入知识库。",
+    "expected": "走 Import / Normalize Sources 路线，使用 RetainPDF-style artifact contract；外部 OCR/provider/upload 前必须确认。"
+  },
+  {
+    "id": "optional-graph-compile",
+    "prompt": "帮我生成知识图谱。",
+    "expected": "先确认 graph schema profile、source scope、confidence labels、依赖和 artifact 路径；不能默认安装或编译 graph。"
+  },
+  {
+    "id": "p4-graph-compile-planning",
+    "prompt": "已经有 graph adapter readiness 了，请规划怎么编译知识图谱；先不要安装依赖、运行 graphify 或写 graph artifacts。",
+    "expected": "走 P4.3 graph compile planning 路线，消费 P4.1 adapter readiness，输出 schema profile、source scope、confidence policy、artifact targets、dependency boundary 和 confirmation gates；不得安装依赖、运行 graphify/graph 工具、编译 graph、写 graph.json/GRAPH_REPORT.md/cache/html、启动 server/MCP、调用外部 provider，或把 inferred/ambiguous relationships 当成 durable facts。"
+  },
+  {
+    "id": "skill-format-guard",
+    "prompt": "直接把 GUI 和依赖都塞进 skill 里吧。",
+    "expected": "拒绝把重 runtime/frontend/dependencies 塞进 Skill 本体，说明 Skill 保持轻量并通过 runtime/adapters 按需实现。"
+  },
+  {
+    "id": "p4-adapter-readiness-check",
+    "prompt": "检查这个项目的 PDF、图谱和导出适配器现在是否可用。",
+    "expected": "走 Check Project-Wiki Runtime / adapter readiness 路线，只报告 RetainPDF-style manifest、graph artifacts、export plan 的只读状态；不能安装依赖、OCR、转换 PDF、编译 graph、执行 export 或写入 adapter artifacts。"
+  },
+  {
+    "id": "p4-source-normalization-import-plan",
+    "prompt": "我已经有 RetainPDF-style artifacts-manifest 了，请用 project-wiki 规划怎么把这些 normalized sources 接成知识库；先不要 OCR、转换、复制或写文件。",
+    "expected": "走 Import / Normalize Sources / P4.2 source normalization import planning 路线；只读取显式配置的 manifest，输出 source inventory、artifact summary、source registry proposal、wiki/knowledge-object proposal、输出 roots、风险和确认问题；不得运行 OCR、转换、上传、安装依赖、执行命令或写 source registry/wiki。"
+  },
+  {
+    "id": "p4-export-planning-no-export",
+    "prompt": "已经有 export adapter readiness 和显式 export plan 了，请规划怎么导出 wiki；先不要安装依赖、运行 Quartz/Obsidian/static 工具、生成 artifacts、发布、上传或写文件。",
+    "expected": "走 Publish / Export Wiki / P4.4 export planning 路线，消费 P4.1 export adapter readiness 和显式 export plan，输出 source scope、target/profile、output root、dependency boundary、rollback/cleanup 和 confirmation gates；不得安装 export 依赖、运行 Quartz/static/Obsidian 工具、运行 export 命令、生成或写 export artifacts、上传/发布、启动 server/MCP、调用外部 provider、修改文件，或把显式 export plan 当成执行确认。"
   }
 ]

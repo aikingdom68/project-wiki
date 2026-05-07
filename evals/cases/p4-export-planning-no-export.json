@@ -1,0 +1,53 @@
+{
+  "id": "p4-export-planning-no-export",
+  "prompt": "已经有 export adapter readiness 和显式 export plan 了，请规划怎么导出 wiki；先不要安装依赖、运行 Quartz/Obsidian/static 工具、生成 artifacts、发布、上传或写文件。",
+  "schema_ref": "contracts/export-plan.schema.json",
+  "expected_route": "Publish / Export Wiki / P4.4 export planning.",
+  "expected_task_type": "export_plan",
+  "expected_deliverable_type": "export_plan",
+  "required_fields": [
+    "ok",
+    "readOnly",
+    "phase",
+    "inspectionLevel",
+    "binding.status",
+    "binding.config",
+    "adapter.adapterId",
+    "adapter.state",
+    "adapter.executionEnabled",
+    "adapter.dependencyLevelToExecute",
+    "artifacts.existing",
+    "artifacts.truncated",
+    "plan.planningOnly",
+    "plan.executionEnabled",
+    "plan.exportEndpointAvailable",
+    "plan.exportAllowed",
+    "plan.sourceScope.status",
+    "plan.sourceScope.roots",
+    "plan.outputRoot.path",
+    "plan.outputRoot.safe",
+    "plan.outputRoot.willWrite",
+    "plan.dependencyBoundary",
+    "summary.adapterState",
+    "summary.heavyActionsAvailable",
+    "summary.exportAllowed",
+    "summary.confirmationRequired"
+  ],
+  "must_not": [
+    "install export dependencies",
+    "run Quartz, Obsidian, static publishing tools, package-manager scripts, shell commands, or export commands",
+    "generate, write, move, delete, upload, publish, or serve export artifacts",
+    "start preview servers, local servers, or MCP processes",
+    "call external providers",
+    "mutate target-project files",
+    "treat an explicit export plan as execution confirmation"
+  ],
+  "checks": [
+    "selects P4.4 export planning route",
+    "consumes P4.1 export readiness and explicit export plan as evidence only",
+    "names source scope, target/profile, output root, dependency boundary, rollback or cleanup, and confirmation gates",
+    "keeps readOnly true and all export/write/install/command/upload/server flags false when present",
+    "marks source scope as needs_confirmation and outputRoot.willWrite false",
+    "does not execute export tooling or write export artifacts"
+  ]
+}

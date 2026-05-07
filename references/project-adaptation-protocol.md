@@ -20,6 +20,7 @@ This step should produce plain-language labels such as `project type`, `project 
    - teaching system
    - documentation knowledge base
    - SaaS knowledge layer
+   - document corpus
    - mixed project
 
 2. **Assess project state**
@@ -36,6 +37,7 @@ This step should produce plain-language labels such as `project type`, `project 
    - user-supplied materials
 
 4. **Select candidate task routes**
+   - `intake`
    - `adapt_project`
    - `propose_options`
    - `explain`
@@ -45,6 +47,14 @@ This step should produce plain-language labels such as `project type`, `project 
    - `update_wiki`
    - `source_guided_explain`
    - `query`
+   - `bind_project`
+   - `check_runtime`
+   - `open_admin_gui`
+   - `import_normalize_sources`
+   - `compile_graph`
+   - `publish_export`
+
+   For detailed route heuristics, read `task-routing-guidance.md`. Intake is a pre-route selector, not a heavy implementation module.
 
 5. **Decide whether clarification is mandatory**
    Clarification is mandatory when any of these are unclear:
@@ -54,6 +64,17 @@ This step should produce plain-language labels such as `project type`, `project 
    - the audience or depth
    - the primary task when several are mixed together
 
+6. **Select a candidate knowledge architecture**
+   Do not assume one universal wiki layout. Use `adaptive-knowledge-architecture.md` to propose the smallest fitting structure for the project type and source shape.
+
+7. **Identify confirmation gates**
+   Ask before locking any durable structure that will shape future retrieval:
+   - top-level wiki layout
+   - chapter names or topic groups
+   - source authority and conflict policy
+   - retrieval/indexing policy
+   - file creation, rename, rewrite, or deletion
+
 ## Expected adaptation output
 
 A good adaptation step should state:
@@ -62,6 +83,8 @@ A good adaptation step should state:
 - **Likely primary sources**
 - **Gaps in understanding**
 - **Recommended routes**
+- **Candidate knowledge architecture**
+- **Confirmation gates before execution**
 - **Questions that need confirmation**
 
 ## Good behavior
@@ -69,6 +92,7 @@ A good adaptation step should state:
 - explain what the project appears to be before proposing a route
 - keep repo-state uncertainty visible
 - offer 2-3 best-fit paths instead of forcing one route too early
+- propose chapter/topic structures as candidates first, then ask before treating them as final
 - ask only the smallest set of questions needed to avoid partial landing
 
 ## Bad behavior
@@ -77,3 +101,4 @@ A good adaptation step should state:
 - assuming the user wants wiki edits when they may only want a read-only diagnosis
 - ignoring that a project may be cold-start and need scaffolding first
 - choosing one task shape silently when the request mixes several goals
+- inventing final chapter names, topic groups, or source priority without user confirmation

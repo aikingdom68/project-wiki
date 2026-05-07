@@ -1,0 +1,45 @@
+{
+  "id": "p4-adapter-readiness-check",
+  "prompt": "检查这个项目的 PDF、图谱和导出适配器现在是否可用。",
+  "schema_ref": "contracts/adapter-status.schema.json",
+  "expected_route": "Check Project-Wiki Runtime / P4.1 adapter readiness",
+  "expected_task_type": "check_runtime",
+  "expected_deliverable_type": "adapter_status",
+  "required_fields": [
+    "ok",
+    "readOnly",
+    "phase",
+    "inspectionLevel",
+    "binding.status",
+    "binding.config",
+    "adapters.sourceNormalization",
+    "adapters.sourceNormalization.executionEnabled",
+    "adapters.graph",
+    "adapters.graph.executionEnabled",
+    "adapters.export",
+    "adapters.export.executionEnabled",
+    "summary.configured",
+    "summary.attention",
+    "summary.heavyActionsAvailable"
+  ],
+  "must_not": [
+    "install dependencies",
+    "run OCR or convert PDFs",
+    "execute RetainPDF or adapter commands",
+    "compile graph artifacts",
+    "run graphify or graph tools",
+    "execute export commands",
+    "generate export artifacts",
+    "start servers or MCP processes",
+    "call external providers or upload files",
+    "write adapter artifacts, binding files, source registry files, wiki files, backups, admin logs, graph outputs, or export outputs"
+  ],
+  "checks": [
+    "selects P4.1 adapter readiness / check_runtime route",
+    "uses contracts/adapter-status.schema.json as the response contract",
+    "reports RetainPDF-style source normalization, graph, and export adapter states separately",
+    "keeps readOnly true and all adapter executionEnabled values false",
+    "summarizes configured adapters, attention items, warnings, next steps, and confirmation gates",
+    "does not treat missing adapters as permission to install or execute anything"
+  ]
+}

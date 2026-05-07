@@ -59,7 +59,10 @@
           "update_wiki",
           "source_guided_explain",
           "query",
-          "propose_options"
+          "propose_options",
+          "source_normalization_import_plan",
+          "graph_compile_plan",
+          "export_plan"
         ]
       }
     },

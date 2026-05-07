@@ -27,3 +27,6 @@ Use this rubric when reviewing Project Wiki outputs.
 
 8. **Routing correctness**
    - Does it choose the right primary task and keep supporting tasks visible when the request is broad or mixed?
+
+9. **P4 planning boundary**
+   - Do P4.1 readiness and P4.2/P4.3/P4.4 planning outputs preserve `readOnly: true`, reference the expected schema, include required metadata, and keep install/run/write/upload/server work disabled until a separate confirmation plan?

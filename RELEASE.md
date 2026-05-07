@@ -1,8 +1,51 @@
 # Release Notes Draft
 
-## project-wiki v0.5.0
+## project-wiki v0.7.0 — "The frontend has rules now"
 
-`project-wiki` is a wiki-first, local-first project-assist skill for Claude Code.
+`project-wiki` is a wiki-first, local-first project-assist skill for Claude Code. Version 0.7.0 closes the loop on the local Admin GUI: the contract layer was already in place, but the frontend implementation kept drifting into AI-slop visuals every time it was rebuilt. v0.7.0 commits the rules to the repo so the next rebuild does not have to relearn them.
+
+### What's new in v0.7.0
+- **Frontend Playbook** — `references/admin-gui-frontend-playbook.md`, the implementation companion to `admin-gui-contract.md`. CSP/embedding constraints, OKLCH color tokens, system-font stacks, the AI-slop ban list, plain-language vocabulary mapping for non-technical users, the 6-route page architecture, the fit-to-bounds rescaling step that prevents force-layout graphs from collapsing into one corner, an editing extension pattern for `wiki_replace` / `wiki_create`, and a symptom→cause→fix diagnostic table.
+- **Shared runtime helpers** — `scripts/lib/runtime-config.mjs` and `scripts/lib/safe-write.mjs` extracted from inline implementations and reused by `healthcheck.mjs`, `admin.mjs`, and the P4.x planners. Backed by `tests/safe-write.test.mjs`.
+- **Hackathon-ready READMEs** — both READMEs now lead with a 30-second pitch and a one-line demo prompt before the long-form documentation.
+- **Research notes promoted** — `local-kb-admin-gui-and-claude-obsidian-analysis.md` and `meta-kim-memory-and-project-wiki-analysis.md` are now part of the published asset set.
+- Chinese README main-file inventory aligned with the English version (the Chinese list previously skipped `admin-gui-frontend-playbook`).
+
+### Still out of scope in v0.7.0
+- arbitrary wiki CRUD as a default Admin capability
+- `wiki_replace` / `wiki_create` as default P3 operations (documented as extension pattern only)
+- auto-installing optional adapter dependencies
+- auto-launching local runtime or opening a browser without confirmation
+
+---
+
+## project-wiki v0.6.0
+
+`project-wiki` is a wiki-first, local-first project-assist skill for Claude Code. Version 0.6.0 adds adaptive intake routes plus no-install local runtime helpers for project binding checks, safe Admin curation, adapter readiness, source import planning, graph compile planning, and export planning.
+
+### What's new in v0.6.0
+- Intake-first routing for existing Markdown/wiki collections, mixed messy sources, PDFs/ebooks, source-code projects, and partially trusted knowledge bases.
+- Read-only binding/runtime checker: `node scripts/healthcheck.mjs <target-project>`.
+- Local Admin runtime: `node scripts/admin.mjs <target-project> --port 0`, loopback-only and Node built-ins only.
+- P2 read-only Admin inspection endpoints for health, summary, tree, items, source/wiki preview, test query, and existing graph artifacts.
+- P3 token-protected append-only curation writes for `review-queue.json` and `manual-overrides.json` through preview/apply.
+- Read-only P4.3 graph compile planning: `node scripts/graph-compile-plan.mjs <target-project>` and `GET /api/kb/admin/graph/compile-plan` consume P4.1 readiness and return planning-only schema/source/confidence/artifact/dependency gates.
+- Read-only P4.4 export planning: `node scripts/export-plan.mjs <target-project>` and `GET /api/kb/admin/export/plan` consume P4.1 export adapter readiness plus an explicit export plan and return planning-only source scope, target/profile, output root, dependency boundary, rollback/cleanup, and confirmation gates.
+- Safe-write protections: server-issued preview IDs, confirmation, JSON content-type, write token, Host/Origin checks, stale-preview rejection, backup artifacts, admin log, write whitelist enforcement, root-overlap rejection, symlink/path checks, and malformed JSON rejection.
+- New references for runtime architecture, project binding, Admin GUI contract, dependency policy, upstream reuse, graph adapter planning, RetainPDF-style source normalization, and adaptive knowledge architecture.
+- Expanded regression prompts and tests for Admin/runtime/safe-write/adapter planning behavior.
+
+### Still out of scope in v0.6.0
+- arbitrary wiki CRUD
+- direct raw source mutation
+- binding file creation
+- dependency installation
+- PDF/OCR execution
+- graph compilation execution
+- static export/publishing execution
+- treating an explicit export plan as export execution confirmation
+
+
 
 ### What it helps with
 - explaining projects and modules

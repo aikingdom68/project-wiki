@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Wiki Source Normalization Import Plan",
+  "type": "object",
+  "required": ["ok", "readOnly", "phase", "inspectionLevel", "binding", "adapter", "manifest", "plan", "summary", "warnings", "nonGoals"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "readOnly": { "const": true },
+    "phase": { "const": "p4_2_source_normalization_import_planning" },
+    "inspectionLevel": { "type": "integer", "minimum": 1 },
+    "projectRoot": { "type": ["string", "null"] },
+    "binding": {
+      "type": "object",
+      "required": ["status", "config"],
+      "properties": {
+        "status": { "type": "string" },
+        "config": { "type": "object" },
+        "errors": { "type": "array" }
+      },
+      "additionalProperties": false
+    },
+    "adapter": { "$ref": "#/definitions/adapter" },
+    "manifest": {
+      "type": "object",
+      "required": ["path", "exists", "artifactCount", "truncated"],
+      "properties": {
+        "path": { "type": ["string", "null"] },
+        "exists": { "type": "boolean" },
+        "artifactCount": { "type": "integer", "minimum": 0 },
+        "truncated": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "required": ["planningOnly", "executionEnabled", "applyEndpointAvailable", "sourceRegistryWriteEnabled", "wikiWriteEnabled", "proposedRegistryTarget", "candidates", "excluded"],
+      "properties": {
+        "planningOnly": { "const": true },
+        "executionEnabled": { "const": false },
+        "applyEndpointAvailable": { "const": false },
+        "sourceRegistryWriteEnabled": { "const": false },
+        "wikiWriteEnabled": { "const": false },
+        "proposedRegistryTarget": {
+          "type": "object",
+          "required": ["path", "willWrite"],
+          "properties": {
+            "path": { "type": ["string", "null"] },
+            "willWrite": { "const": false }
+          },
+          "additionalProperties": false
+        },
+        "candidates": { "type": "array", "items": { "$ref": "#/definitions/candidate" } },
+        "excluded": { "type": "array", "items": { "$ref": "#/definitions/excluded" } }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": ["manifestArtifacts", "importCandidates", "importable", "excluded", "missing", "unsafe", "heavyActionsAvailable"],
+      "properties": {
+        "manifestArtifacts": { "type": "integer", "minimum": 0 },
+        "importCandidates": { "type": "integer", "minimum": 0 },
+        "importable": { "type": "integer", "minimum": 0 },
+        "excluded": { "type": "integer", "minimum": 0 },
+        "missing": { "type": "integer", "minimum": 0 },
+        "unsafe": { "type": "integer", "minimum": 0 },
+        "heavyActionsAvailable": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "nonGoals": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "adapter": {
+      "type": "object",
+      "required": ["adapterId", "state", "executionEnabled", "dependencyLevelToExecute", "artifacts", "warnings", "confirmationRequiredBefore", "nextSteps"],
+      "properties": {
+        "adapterId": { "const": "retain-pdf" },
+        "state": {
+          "enum": ["not_installed", "env_unavailable", "runtime_failed", "unsupported", "empty_result", "configured"]
+        },
+        "executionEnabled": { "const": false },
+        "dependencyLevelToExecute": { "type": "integer", "minimum": 0 },
+        "artifacts": { "type": "array", "items": { "type": "object" } },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "confirmationRequiredBefore": { "type": "array", "items": { "type": "string" } },
+        "nextSteps": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "candidate": {
+      "type": "object",
+      "required": ["id", "artifactPath", "artifactType", "exists", "safe", "importable", "sourceRole", "proposedSourceId", "proposedRegistryEntry"],
+      "properties": {
+        "id": { "type": "string" },
+        "artifactPath": { "type": "string" },
+        "artifactType": { "type": "string" },
+        "exists": { "const": true },
+        "safe": { "const": true },
+        "importable": { "const": true },
+        "sourceRole": { "const": "primary_normalized_source" },
+        "proposedSourceId": { "type": "string" },
+        "proposedRegistryEntry": {
+          "type": "object",
+          "required": ["source_id", "source_type", "adapter", "artifact_path", "import_status", "review_status"],
+          "properties": {
+            "source_id": { "type": "string" },
+            "source_type": { "const": "normalized_document" },
+            "adapter": { "const": "retain-pdf" },
+            "artifact_path": { "type": "string" },
+            "import_status": { "const": "planned_only" },
+            "review_status": { "const": "needs_review" }
+          },
+          "additionalProperties": false
+        },
+        "title": { "type": "string" },
+        "sourceId": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "sha256": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "excluded": {
+      "type": "object",
+      "required": ["artifactPath", "artifactType", "importable", "reason"],
+      "properties": {
+        "artifactPath": { "type": ["string", "null"] },
+        "artifactType": { "type": ["string", "null"] },
+        "importable": { "const": false },
+        "reason": { "type": "string" },
+        "exists": { "type": "boolean" },
+        "missing": { "const": true },
+        "unsafe": { "const": true }
+      },
+      "additionalProperties": false
+    }
+  }
+}

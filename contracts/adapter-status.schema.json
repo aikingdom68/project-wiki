@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Wiki Adapter Status",
+  "type": "object",
+  "required": ["ok", "readOnly", "phase", "inspectionLevel", "binding", "adapters", "summary", "warnings"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "readOnly": { "const": true },
+    "phase": { "const": "p4_adapter_readiness" },
+    "inspectionLevel": { "type": "integer", "minimum": 0 },
+    "projectRoot": { "type": ["string", "null"] },
+    "binding": {
+      "type": "object",
+      "required": ["status", "config"],
+      "properties": {
+        "status": { "type": "string" },
+        "config": { "type": "object" },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code"],
+            "properties": {
+              "code": { "type": "string" },
+              "field": { "type": ["string", "null"] }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "adapters": {
+      "type": "object",
+      "required": ["sourceNormalization", "graph", "export"],
+      "properties": {
+        "sourceNormalization": { "$ref": "#/definitions/adapter" },
+        "graph": { "$ref": "#/definitions/adapter" },
+        "export": { "$ref": "#/definitions/adapter" }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": ["configured", "attention", "heavyActionsAvailable"],
+      "properties": {
+        "configured": { "type": "array", "items": { "type": "string" } },
+        "attention": { "type": "array", "items": { "type": "string" } },
+        "heavyActionsAvailable": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "adapter": {
+      "type": "object",
+      "required": ["adapterId", "state", "executionEnabled", "dependencyLevelToExecute", "artifacts", "warnings", "confirmationRequiredBefore", "nextSteps"],
+      "properties": {
+        "adapterId": { "type": "string" },
+        "state": {
+          "enum": ["not_installed", "env_unavailable", "runtime_failed", "unsupported", "empty_result", "configured"]
+        },
+        "executionEnabled": { "const": false },
+        "dependencyLevelToExecute": { "type": "integer", "minimum": 0 },
+        "artifacts": { "type": "array", "items": { "$ref": "#/definitions/artifact" } },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "confirmationRequiredBefore": { "type": "array", "items": { "type": "string" } },
+        "nextSteps": { "type": "array", "items": { "type": "string" } },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "schemaProfile": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["path", "exists"],
+      "properties": {
+        "path": { "type": "string" },
+        "exists": { "type": "boolean" },
+        "kind": { "type": "string" },
+        "error": { "type": "string" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "summary": { "$ref": "#/definitions/summary" }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string" },
+        "count": { "type": "integer", "minimum": 0 },
+        "keys": { "type": "array", "items": { "type": "string" } },
+        "artifactCount": { "type": "integer", "minimum": 0 },
+        "nodeCount": { "type": "integer", "minimum": 0 },
+        "edgeCount": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

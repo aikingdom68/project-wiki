@@ -2,6 +2,51 @@
 
 > 语言说明：这是中文文档。For the English version, see [README.md](README.md).
 
+## 30 秒电梯版
+
+大多数"AI 知识库"工具其实是套了 UI 的 RAG —— 每次提问都重新检索一遍，从不沉淀，LLM 一断线就直接死掉。
+
+`project-wiki` 把这件事翻转过来。**真正持久的产出是结构化的 Markdown 页面** —— 人可以离线阅读，产品可以直接嵌入，Claude 可以协同写作并附结构化引用。**不需要向量数据库，不需要 API，离线可用。**
+
+它还是一个**拒绝直接动手**的 skill。当你说"解释这个项目"时，它先诊断这里到底有什么、提出 2-3 条候选路径、必要时只问几个澄清问题，然后在你确认之后才动文件 —— 像一个谨慎的新维护者。
+
+## 一行试用
+
+```text
+/project-wiki 帮我看看这堆资料能不能接成知识库。
+```
+
+你不会立刻拿到一份打磨过的答案，你会拿到：
+
+1. 一份**项目盘点**（项目类型、源材料形态、已有 wiki/KB 状态、理解缺口）
+2. **2-3 条候选路径**，每条带显式 trade-off
+3. **必要时的澄清问题**，只问"避免走错路"所需的那几个
+4. 任何文件被创建、改名、覆写之前的**确认门**
+
+这就是核心。你保留下来的产出是 wiki 页面，不是聊天回复。
+
+## 凭什么和别人不一样
+
+| | 纯 RAG | 普通笔记 / wiki | **project-wiki** |
+|---|---|---|---|
+| **离线能用？** | 死机 —— chunks 离开 LLM 没用 | 可读但无结构 | 降级但**可读**，自带引用 |
+| **知识能累积？** | 不能，每次重新检索 | 能，但全靠手 | 能 —— 通过持久页面 + 生命周期字段（`review_status` / `supersedes` / `retention_class`） |
+| **事实与推断分得开？** | LLM 生成时混在一起 | 看作者 | **永远分开**：`verified_fact` / `synthesis` / `open_question` |
+| **能嵌入你自己的产品？** | chunks 是给 LLM 看的 | 只能用 Markdown | Markdown **加** JSON 契约 + 引用对象 |
+| **有确认门？** | 没有 | 没有 | 任何持久结构选择都暂停问人 |
+| **一上来就给打磨答案？** | 是（经常错） | 不适用 | **不**。先诊断，再提路径，确认后才执行 |
+
+## 它凭什么值得收藏
+
+这是一个参赛作品，所以电梯版立场写在这里：
+
+1. **wiki 才是产品，retrieval 只是证人。** 你保留下来的是 Markdown 页面，不是聊天记录。新人即使没有 LLM 也能读懂。
+2. **本地真相高于一般最佳实践。** 当你的仓库与互联网冲突时，仓库赢。当你的教材与通用 LLM 冲突时，教材赢。
+3. **确认门是功能，不是阻力。** 章节树、知识源权威、检索策略、文件改写 —— 任何持久决策都暂停在 gate 上。AI 提议，人来批准。
+4. **前端也要讲规则。** 本地 Admin GUI 是产品的一部分。v0.7.0 发布的 [Frontend Playbook](references/admin-gui-frontend-playbook.md) 中，每一条视觉规则、用户语言映射、图谱布局修复，都能追溯到一个真实发生过的故障。
+
+## 它具体在做什么
+
 `project-wiki` 是一个独立开源的 Claude Code skill，用来把**项目资料**整理成可持续维护的知识层，并在此基础上帮助你做：
 
 - 项目解释
@@ -216,6 +261,7 @@ node ~/.claude/skills/project-wiki/scripts/doctor.mjs ~/.claude/skills/project-w
 | `contracts/retrieval-contract.schema.json` | 定义检索请求/响应结构：查询、源过滤、检索模式、覆盖度评估、降级信号、快照版本 |
 | `contracts/output-contract.schema.json` | 定义按任务类型的结构化输出，包含 API 响应的引用对象 |
 | `contracts/source-policy.schema.json` | 定义按租户或按项目的知识源优先级策略 |
+| `contracts/export-plan.schema.json` | 定义 P4.4 只读 export planning 响应结构；不是导出执行契约 |
 
 关键 SaaS 场景指导：
 - **离线降级**：`references/modes-and-safety.md` → “Offline capability boundary for SaaS” 定义了离线可用/受限/不可用的能力边界和降级序列
@@ -631,6 +677,34 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 - 多人实时协作平台
 - 企业知识中台
 
+## Runtime 与 Admin 工具
+
+`project-wiki` 包含不需要安装依赖的本地 runtime 辅助工具，用于已配置的目标项目：
+
+```bash
+node scripts/healthcheck.mjs <target-project>
+node scripts/adapter-status.mjs <target-project>
+node scripts/source-normalization-import-plan.mjs <target-project>
+node scripts/graph-compile-plan.mjs <target-project>
+node scripts/export-plan.mjs <target-project>
+node scripts/admin.mjs <target-project> --port 0
+```
+
+- `healthcheck.mjs` 是只读检查工具，会用 JSON 报告 binding、config、root、write whitelist 状态。
+- `adapter-status.mjs` 是只读检查工具，会报告 RetainPDF-style source normalization、graph artifacts、export plans 的 P4 adapter readiness，但不会执行 adapter。
+- `source-normalization-import-plan.mjs` 是只读规划工具，会把显式 RetainPDF-style manifest 转成 planning-only source normalization import plan，但不会写 source registry 或 wiki 文件。
+- `graph-compile-plan.mjs` 是只读规划工具，会把 P4.1 graph adapter readiness 转成 P4.3 graph compile plan；它只提出 schema profile、source scope、confidence policy、artifact targets、dependency boundary 和 confirmation gates，不会编译 graph 或写 graph artifacts。
+- `export-plan.mjs` 是只读规划工具，会把 P4.1 export adapter readiness 和显式 export plan 转成 P4.4 export plan；它只提出 source scope、target/profile、output root、dependency boundary、rollback/cleanup 和 confirmation gates，不会安装导出依赖、运行 Quartz/static/Obsidian 工具、运行 export 命令、生成/写入 export artifacts、上传/发布、启动 server/MCP、调用外部 provider，或把显式 plan 当成执行确认。
+- `admin.mjs` 只绑定 `127.0.0.1`，提供本地检查界面，只使用 Node 内置模块。
+- P2 检查路由保持只读：health、summary、tree、items、source/wiki preview、本地 test query、已有 graph artifact 读取。
+- P3 curation 写入只允许通过带 token 的 `preview` / `apply` 追加 `review-queue.json` 和 `manual-overrides.json`，并带 diff preview、stale-preview 检查、备份、write whitelist 校验和 `admin-log.md`。
+- P4.1 adapter readiness 只增加状态检查；不会 OCR、转换 PDF、编译 graph、安装依赖、执行 export 命令或写 adapter artifacts。
+- P4.2 source normalization import planning 只分类已有 manifest artifacts 并提出 planned registry entries；不会导入、复制、OCR、转换、解压或写 KB 文件。
+- P4.3 graph compile planning 只消费 P4.1 readiness 并提出 graph compile plan；不会安装 graph 依赖、运行 graphify/graph 工具、编译 graph artifacts、写 `graph.json`/`GRAPH_REPORT.md`/cache/html、启动 server/MCP、调用外部 provider，或把 inferred/ambiguous relationships 提升为 durable facts。
+- P4.4 export planning 只消费 P4.1 export readiness 和显式 export plan；不会安装 export 依赖、运行 Quartz/static/Obsidian 工具、运行 export 命令、生成/写入 export artifacts、上传/发布、启动 server/MCP、调用外部 provider、修改文件，或把显式 plan 当成执行确认。
+- P4.5 加固 output/retrieval/project-profile contracts 与 golden cases；doctor guards 会检查 enum drift、P4 deliverable mapping drift、retrieval fallback/clarification 缺口，以及 P4 examples/evals metadata 缺失。
+- 它仍然不会创建 binding 文件、安装依赖、导入/OCR PDF、编译 graph、导出站点、直接修改 raw source，或提供任意 wiki CRUD。
+
 ## 核心设计立场
 
 `project-wiki` 是 **wiki-first**。
@@ -652,11 +726,22 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 - `references/system-integration-guidance.md` — 作为平台能力规范时的系统使用方式，SaaS 集成契约
 - `references/wiki-linking.md` — `[[slug]]` 交叉引用语法、反向链接、孤页检测
 - `references/cold-start-protocol.md` — 从零引导知识库冷启动
+- `references/adaptive-knowledge-architecture.md` — 按项目类型设计知识结构与确认门
+- `references/project-binding-protocol.md` — 目标项目 binding root、admin root、source root 和 write whitelist 契约
+- `references/runtime-architecture.md` — P0/P1/P2/P3/P4 runtime 边界与无安装辅助脚本
+- `references/admin-gui-contract.md` — 本地 Admin GUI 读写边界与 P3 curation API 契约
+- `references/admin-gui-frontend-playbook.md` — Admin GUI 前端实施 playbook（视觉系统、力导布局、编辑 UI、诊断），每条规则都对应一次过去的实际故障
+- `references/dependency-installation-policy.md` — 延迟安装策略与确认门
+- `references/upstream-reuse-policy.md` — 上游工具 adapter-first 复用策略
+- `references/graph-adapter-contract.md` — 可选 graph artifact 规划与 confidence labels
+- `references/retain-pdf-adapter-contract.md` — 可选 PDF/OCR normalization artifact 契约
+- `references/export-adapter-contract.md` — 可选 static/Obsidian/Quartz export planning 契约
 
 ### 契约文件
 - `contracts/output-contract.schema.json` — 按任务类型的结构化输出，含引用对象
 - `contracts/source-policy.schema.json` — 知识源优先级策略
 - `contracts/retrieval-contract.schema.json` — SaaS/API 场景的检索请求/响应结构
+- `contracts/export-plan.schema.json` — P4.4 只读 export planning 响应结构
 
 ### 维护与质量文件
 - `references/evidence-and-citation.md` — 轻量证据引用规范，API 引用格式
@@ -666,7 +751,7 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 - `references/output-quality-standards.md` — 输出质量最低标准
 - `references/templates/*.md` — 页面模板（overview、module、decision、glossary、troubleshooting、SCHEMA）
 - `examples/*.md` — 高质量使用样例
-- `scripts/install.mjs` / `scripts/doctor.mjs` — 安装与自检工具
+- `scripts/install.mjs` / `scripts/doctor.mjs` / `scripts/healthcheck.mjs` / `scripts/adapter-status.mjs` / `scripts/source-normalization-import-plan.mjs` / `scripts/graph-compile-plan.mjs` / `scripts/export-plan.mjs` / `scripts/admin.mjs` — 安装、自检、runtime 检查、adapter readiness、import planning、graph compile planning、export planning 和本地 Admin 工具
 - `evals/` — 轻量 golden cases 与 rubric
 - `ROADMAP.md` — 路线图
 
@@ -677,6 +762,13 @@ project-wiki 支持小团队复用，但 **不** 试图成为：
 - **small-team friendly** —— 结果可被团队复用
 - **local-first** —— 不依赖在线服务也能成立
 - **evidence-aware** —— 重要结论应能追溯到来源
+
+## 背景阅读
+
+仓库根目录附带两份分析文档。它们不是使用本 skill 的必读材料，但记录了当前设计背后的思路 —— 适合在审阅、Fork 或想理解"为什么是这个样子"时阅读：
+
+- [`local-kb-admin-gui-and-claude-obsidian-analysis.md`](local-kb-admin-gui-and-claude-obsidian-analysis.md) —— 本地 KB Admin GUI 模式分析与 `claude-obsidian` 工作流思路对照，是 P2/P3 Admin GUI 契约和 v0.7.0 Frontend Playbook 的素材来源。
+- [`meta-kim-memory-and-project-wiki-analysis.md`](meta-kim-memory-and-project-wiki-analysis.md) —— 长寿命 memory/持久化系统分析，以及 project-wiki 的持久知识层与 agent 风格 memory 的差别，是生命周期词汇与 wiki-vs-RAG 立场的来源。
 
 ## License
 

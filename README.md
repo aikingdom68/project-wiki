@@ -2,6 +2,51 @@
 
 > Language note: this is the English default README. For the Chinese version, see [README.zh-CN.md](README.zh-CN.md).
 
+## 30 seconds
+
+Most "AI knowledge base" tools are RAG with a UI. They re-search every question, never accumulate, and stop working the moment the LLM is offline.
+
+`project-wiki` flips that. The durable output is **structured Markdown pages** — pages humans can read offline, products can embed directly, and Claude can co-author with citations. **No vector DB required. No API required. Works offline.**
+
+It is also a skill that **refuses to start writing**. When you say "explain this project", it diagnoses what's actually here, proposes 2–3 routes, and asks before touching a single file — the way a careful new maintainer would.
+
+## Try it in one line
+
+```text
+/project-wiki 帮我看看这堆资料能不能接成知识库。
+```
+
+You will not get an immediate answer. You will get:
+
+1. an **intake summary** (project type, source shapes, existing wiki/KB state, gaps)
+2. **2–3 candidate routes** with explicit trade-offs
+3. **clarifying questions**, only the ones needed to avoid the wrong path
+4. a confirmation gate before any file is created, renamed, or rewritten
+
+That is the entire point. The output you keep is a wiki page — not a chat reply.
+
+## Why it's different
+
+| | Pure RAG | Generic notes / wiki | **project-wiki** |
+|---|---|---|---|
+| **Offline?** | Dead — chunks need an LLM | Usable but unstructured | Degraded but **readable**, with citations |
+| **Knowledge accumulates?** | No — re-derived every query | Yes, manually | Yes, via durable pages + lifecycle metadata (`review_status`, `supersedes`, `retention_class`) |
+| **Fact vs guess?** | Blended by the LLM | Up to the writer | Always separated: `verified_fact` / `synthesis` / `open_question` |
+| **Embedded in your product?** | Chunks are LLM-only | Markdown only | Markdown **plus** JSON contracts + citation objects |
+| **Confirmation gates?** | None | None | Every durable structural decision pauses for the user |
+| **Starts with a polished answer?** | Yes (often wrong) | N/A | **No.** Diagnoses first, proposes routes, then executes |
+
+## Why it might win you over
+
+This is a hackathon project, so the elevator version:
+
+1. **Wiki is the product, retrieval is a witness.** The artifact you keep is a Markdown page, not a chat log. A new teammate can read it without an LLM.
+2. **Local truth outranks global best practice.** When your repo and the internet disagree, the repo wins. When your textbook and a generic LLM disagree, the textbook wins.
+3. **Confirmation is a feature, not friction.** Chapter trees, source authority, retrieval policy, file mutations — every durable choice stops at a gate. AI proposes; the human ratifies.
+4. **The frontend has rules.** The local Admin GUI is part of the product. v0.7.0 ships a [Frontend Playbook](references/admin-gui-frontend-playbook.md) where every visual rule, vocabulary mapping, and graph-layout fix traces back to a specific failure that has actually happened in production data.
+
+## What this skill does
+
 `project-wiki` is an independent open-source Claude Code skill for organizing **project materials** into a maintainable knowledge layer, and then using that layer to help you with:
 
 - project explanation
@@ -219,6 +264,7 @@ If you are building an AI SaaS product, `project-wiki` provides concrete integra
 | `contracts/retrieval-contract.schema.json` | Defines retrieval request/response shapes: query, source filters, retrieval modes, coverage assessment, fallback signals, snapshot versioning |
 | `contracts/output-contract.schema.json` | Defines structured output shapes by task type, including citation objects for API responses |
 | `contracts/source-policy.schema.json` | Defines per-tenant or per-project source prioritization policies |
+| `contracts/export-plan.schema.json` | Defines the P4.4 read-only export planning response shape; not an export execution contract |
 
 Key SaaS-specific guidance:
 - **Offline fallback**: `references/modes-and-safety.md` → “Offline capability boundary for SaaS” defines what works offline, what degrades, and what requires connectivity
@@ -630,6 +676,34 @@ For a small team of 2-8 people, the recommended usage is:
 - a multi-user real-time collaboration platform
 - an enterprise knowledge hub
 
+## Runtime and Admin Tools
+
+`project-wiki` includes no-install local runtime helpers for configured target projects:
+
+```bash
+node scripts/healthcheck.mjs <target-project>
+node scripts/adapter-status.mjs <target-project>
+node scripts/source-normalization-import-plan.mjs <target-project>
+node scripts/graph-compile-plan.mjs <target-project>
+node scripts/export-plan.mjs <target-project>
+node scripts/admin.mjs <target-project> --port 0
+```
+
+- `healthcheck.mjs` is read-only and reports binding/config/root/write-whitelist state as JSON.
+- `adapter-status.mjs` is read-only and reports P4 adapter readiness for RetainPDF-style source normalization, graph artifacts, and export plans without executing adapters.
+- `source-normalization-import-plan.mjs` is read-only and turns an explicit RetainPDF-style manifest into a planning-only source normalization import plan without writing a source registry or wiki files.
+- `graph-compile-plan.mjs` is read-only and turns P4.1 graph adapter readiness into a P4.3 graph compile plan; it proposes schema profile, source scope, confidence policy, artifact targets, dependency boundary, and confirmation gates without compiling graphs or writing graph artifacts.
+- `export-plan.mjs` is read-only and turns P4.1 export adapter readiness plus an explicit export plan into a P4.4 export plan; it proposes source scope, target/profile, output root, dependency boundary, rollback/cleanup, and confirmation gates without installing export dependencies, running publishers, writing export artifacts, uploading, publishing, starting servers/MCP, calling external providers, or treating the plan as execution confirmation.
+- `admin.mjs` binds only to `127.0.0.1`, serves a local inspection UI, and uses Node built-ins only.
+- P2 inspection routes are read-only: health, summary, tree, items, source/wiki preview, local test query, and existing graph artifact read.
+- P3 curation writes are limited to token-protected `preview` / `apply` for append-only `review-queue.json` and `manual-overrides.json` updates, with diff preview, stale-preview checks, backups, write whitelist enforcement, and `admin-log.md`.
+- P4.1 adapter readiness adds only status inspection; it does not run OCR, convert PDFs, compile graphs, install dependencies, execute export commands, or write adapter artifacts.
+- P4.2 source normalization import planning only classifies existing manifest artifacts and proposes planned registry entries; it does not import, copy, OCR, convert, unzip, or write KB files.
+- P4.3 graph compile planning only consumes P4.1 readiness and proposes a graph compile plan; it does not install graph dependencies, run graphify/graph tools, compile graph artifacts, write `graph.json`/`GRAPH_REPORT.md`/cache/html, start servers/MCP, call external providers, or promote inferred/ambiguous relationships to durable facts.
+- P4.4 export planning only consumes P4.1 export readiness and an explicit export plan; it does not install export dependencies, run Quartz/static/Obsidian tools, run export commands, generate/write export artifacts, upload/publish, start servers/MCP, call external providers, mutate files, or treat the explicit plan as execution confirmation.
+- P4.5 hardens output/retrieval/project-profile contracts and golden cases; doctor guards catch enum drift, P4 deliverable mapping drift, retrieval fallback/clarification gaps, and missing P4 examples/evals metadata.
+- It still does not create binding files, install dependencies, import/OCR PDFs, compile graphs, export sites, directly edit raw sources, or provide arbitrary wiki CRUD.
+
 ## Core Design Position
 
 `project-wiki` is **wiki-first**.
@@ -651,11 +725,21 @@ That means:
 - `references/system-integration-guidance.md` — how to use it as a platform capability specification, SaaS integration contracts
 - `references/wiki-linking.md` — `[[slug]]` cross-reference syntax, backlinks, and orphan detection
 - `references/cold-start-protocol.md` — bootstrapping a knowledge base from zero
+- `references/adaptive-knowledge-architecture.md` — project-type-specific knowledge structures and confirmation gates
+- `references/project-binding-protocol.md` — target-project binding roots, admin roots, source roots, and write whitelist contract
+- `references/runtime-architecture.md` — P0/P1/P2/P3/P4 runtime boundaries and no-install helper scripts
+- `references/admin-gui-contract.md` — local Admin GUI read/write boundary and P3 curation API contract
+- `references/dependency-installation-policy.md` — lazy install policy and confirmation gates
+- `references/upstream-reuse-policy.md` — adapter-first reuse policy for upstream tools
+- `references/graph-adapter-contract.md` — optional graph artifact planning and confidence labels
+- `references/retain-pdf-adapter-contract.md` — optional PDF/OCR normalization artifact contract
+- `references/export-adapter-contract.md` — optional static/Obsidian/Quartz export planning contract
 
 ### Contracts
 - `contracts/output-contract.schema.json` — structured output shapes by task type, including citations
 - `contracts/source-policy.schema.json` — source prioritization policies
 - `contracts/retrieval-contract.schema.json` — retrieval request/response shapes for SaaS and API contexts
+- `contracts/export-plan.schema.json` — P4.4 read-only export planning response shape
 
 ### Maintenance and quality files
 - `references/evidence-and-citation.md` — lightweight evidence citation guidance, API-facing citation format
@@ -665,7 +749,7 @@ That means:
 - `references/output-quality-standards.md` — minimum output quality standards
 - `references/templates/*.md` — page templates (overview, module, decision, glossary, troubleshooting, SCHEMA)
 - `examples/*.md` — high-quality usage examples
-- `scripts/install.mjs` / `scripts/doctor.mjs` — installation and self-check tools
+- `scripts/install.mjs` / `scripts/doctor.mjs` / `scripts/healthcheck.mjs` / `scripts/adapter-status.mjs` / `scripts/source-normalization-import-plan.mjs` / `scripts/graph-compile-plan.mjs` / `scripts/export-plan.mjs` / `scripts/admin.mjs` — installation, self-check, runtime inspection, adapter readiness, import planning, graph compile planning, export planning, and local Admin tools
 - `evals/` — lightweight golden cases and rubrics
 - `ROADMAP.md` — roadmap
 
@@ -676,6 +760,13 @@ This skill is designed to be:
 - **small-team friendly** — outputs can be reused by a team
 - **local-first** — viable without depending on online services
 - **evidence-aware** — important conclusions should be traceable to sources
+
+## Background Reading
+
+The repository ships with two analysis documents at the root level. They are not required reading to use the skill, but they document the reasoning that shaped the current design — useful if you are reviewing this project, forking it, or just want to understand why things are the way they are:
+
+- [`local-kb-admin-gui-and-claude-obsidian-analysis.md`](local-kb-admin-gui-and-claude-obsidian-analysis.md) — analysis of local KB admin GUI patterns and a comparison with the `claude-obsidian` workflow ideas, informing the P2/P3 Admin GUI contract and the v0.7.0 Frontend Playbook.
+- [`meta-kim-memory-and-project-wiki-analysis.md`](meta-kim-memory-and-project-wiki-analysis.md) — analysis of long-lived memory/persistence systems and how project-wiki's durable knowledge layer differs from agent-style memory, informing the lifecycle vocabulary and the wiki-vs-RAG positioning.
 
 ## License
 

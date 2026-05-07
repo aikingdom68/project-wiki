@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Wiki Graph Compile Plan",
+  "type": "object",
+  "required": ["ok", "readOnly", "phase", "inspectionLevel", "binding", "adapter", "artifacts", "plan", "summary", "warnings", "nonGoals"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "readOnly": { "const": true },
+    "phase": { "const": "p4_3_graph_compile_planning" },
+    "inspectionLevel": { "type": "integer", "minimum": 1 },
+    "projectRoot": { "type": ["string", "null"] },
+    "binding": {
+      "type": "object",
+      "required": ["status", "config"],
+      "properties": {
+        "status": { "type": "string" },
+        "config": { "type": "object" },
+        "errors": { "type": "array" }
+      },
+      "additionalProperties": false
+    },
+    "adapter": { "$ref": "#/definitions/adapter" },
+    "artifacts": {
+      "type": "object",
+      "required": ["existing", "truncated"],
+      "properties": {
+        "existing": { "type": "array", "items": { "$ref": "#/definitions/artifact" } },
+        "truncated": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "required": ["planningOnly", "executionEnabled", "compileEndpointAvailable", "graphWriteEnabled", "dependencyInstallEnabled", "serverStartEnabled", "schemaProfile", "sourceScope", "confidencePolicy", "artifactTarget", "dependencyBoundary", "confirmationGates"],
+      "properties": {
+        "planningOnly": { "const": true },
+        "executionEnabled": { "const": false },
+        "compileEndpointAvailable": { "const": false },
+        "graphWriteEnabled": { "const": false },
+        "dependencyInstallEnabled": { "const": false },
+        "serverStartEnabled": { "const": false },
+        "schemaProfile": {
+          "type": "object",
+          "required": ["value", "source", "confirmed", "durableTruth"],
+          "properties": {
+            "value": { "type": "string" },
+            "source": { "type": "string" },
+            "confirmed": { "const": false },
+            "durableTruth": { "const": false }
+          },
+          "additionalProperties": false
+        },
+        "sourceScope": {
+          "type": "object",
+          "required": ["status", "roots", "existingGraphArtifactsAreEvidenceOnly"],
+          "properties": {
+            "status": { "const": "needs_confirmation" },
+            "roots": { "type": "array", "items": { "$ref": "#/definitions/sourceRoot" } },
+            "existingGraphArtifactsAreEvidenceOnly": { "const": true }
+          },
+          "additionalProperties": false
+        },
+        "confidencePolicy": {
+          "type": "object",
+          "required": ["labels", "inferredRelationshipsDurable", "ambiguousRelationshipsDurable", "requiresEvidenceForExtracted", "reviewRequiredFor"],
+          "properties": {
+            "labels": { "type": "array", "minItems": 3, "items": { "type": "string" } },
+            "inferredRelationshipsDurable": { "const": false },
+            "ambiguousRelationshipsDurable": { "const": false },
+            "requiresEvidenceForExtracted": { "const": true },
+            "reviewRequiredFor": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+          },
+          "additionalProperties": false
+        },
+        "artifactTarget": {
+          "type": "object",
+          "required": ["graphJson", "graphReport"],
+          "properties": {
+            "graphJson": { "$ref": "#/definitions/target" },
+            "graphReport": { "$ref": "#/definitions/target" }
+          },
+          "additionalProperties": false
+        },
+        "dependencyBoundary": {
+          "type": "object",
+          "required": ["requiredToExecute", "installAllowed", "commandExecutionAllowed", "externalProviderAllowed", "mcpServerStartAllowed", "allowedNow", "blockedUntilConfirmation"],
+          "properties": {
+            "requiredToExecute": { "type": "integer", "minimum": 0 },
+            "installAllowed": { "const": false },
+            "commandExecutionAllowed": { "const": false },
+            "externalProviderAllowed": { "const": false },
+            "mcpServerStartAllowed": { "const": false },
+            "allowedNow": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+            "blockedUntilConfirmation": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+          },
+          "additionalProperties": false
+        },
+        "confirmationGates": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": ["adapterState", "schemaProfile", "sourceRoots", "existingArtifacts", "plannedTargets", "heavyActionsAvailable", "compileAllowed", "confirmationRequired"],
+      "properties": {
+        "adapterState": { "type": "string" },
+        "schemaProfile": { "type": "string" },
+        "sourceRoots": { "type": "integer", "minimum": 0 },
+        "existingArtifacts": { "type": "integer", "minimum": 0 },
+        "plannedTargets": { "type": "integer", "minimum": 0 },
+        "heavyActionsAvailable": { "const": false },
+        "compileAllowed": { "const": false },
+        "confirmationRequired": { "const": true }
+      },
+      "additionalProperties": false
+    },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "nonGoals": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "adapter": {
+      "type": "object",
+      "required": ["adapterId", "state", "executionEnabled", "dependencyLevelToExecute", "artifacts", "warnings", "confirmationRequiredBefore", "nextSteps"],
+      "properties": {
+        "adapterId": { "const": "graph" },
+        "state": { "enum": ["not_installed", "env_unavailable", "runtime_failed", "unsupported", "empty_result", "configured"] },
+        "executionEnabled": { "const": false },
+        "dependencyLevelToExecute": { "type": "integer", "minimum": 0 },
+        "artifacts": { "type": "array", "items": { "$ref": "#/definitions/artifact" } },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "confirmationRequiredBefore": { "type": "array", "items": { "type": "string" } },
+        "nextSteps": { "type": "array", "items": { "type": "string" } },
+        "metadata": {
+          "type": "object",
+          "properties": { "schemaProfile": { "type": "string" } },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["path", "exists"],
+      "properties": {
+        "path": { "type": "string" },
+        "exists": { "type": "boolean" },
+        "kind": { "type": "string" },
+        "error": { "type": "string" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "summary": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "required": ["path", "willWrite"],
+      "properties": {
+        "path": { "type": ["string", "null"] },
+        "willWrite": { "const": false },
+        "safe": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "sourceRoot": {
+      "type": "object",
+      "required": ["role", "path", "confirmed"],
+      "properties": {
+        "role": { "type": "string" },
+        "path": { "type": "string" },
+        "confirmed": { "const": false }
+      },
+      "additionalProperties": false
+    }
+  }
+}

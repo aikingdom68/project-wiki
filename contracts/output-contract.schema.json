@@ -23,7 +23,10 @@
         "update_wiki",
         "source_guided_explain",
         "query",
-        "propose_options"
+        "propose_options",
+        "source_normalization_import_plan",
+        "graph_compile_plan",
+        "export_plan"
       ]
     },
     "deliverable_type": {
@@ -38,7 +41,10 @@
         "decision_memo",
         "wiki_plan",
         "wiki_update",
-        "knowledge_query_answer"
+        "knowledge_query_answer",
+        "source_normalization_import_plan",
+        "graph_compile_plan",
+        "export_plan"
       ]
     },
     "interaction_status": {
@@ -157,6 +163,26 @@
     "confidence_basis": {
       "type": "string"
     },
+    "planning_quality": {
+      "type": "object",
+      "required": [
+        "planning_only",
+        "execution_enabled",
+        "confirmation_required",
+        "confirmation_gates",
+        "dependency_boundary",
+        "must_not_execute"
+      ],
+      "properties": {
+        "planning_only": {"const": true},
+        "execution_enabled": {"const": false},
+        "confirmation_required": {"const": true},
+        "confirmation_gates": {"type": "array", "items": {"type": "string"}},
+        "dependency_boundary": {"type": "object"},
+        "must_not_execute": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
     "review_status": {
       "type": "string",
       "enum": ["draft", "reviewed", "needs_review", "archived"]
@@ -232,6 +258,16 @@
         },
         "additionalProperties": false
       }
+    },
+    "coverage": {
+      "type": "string",
+      "enum": ["high", "medium", "low", "none"]
+    },
+    "fallback": {
+      "type": "string"
+    },
+    "save_offer": {
+      "type": "string"
     }
   },
   "allOf": [
@@ -313,7 +349,7 @@
         "properties": {"task_type": {"const": "query"}}
       },
       "then": {
-        "required": ["citations"]
+        "required": ["citations", "coverage", "fallback", "save_offer"]
       }
     },
     {
@@ -323,6 +359,42 @@
       },
       "then": {
         "required": ["deliverable_type", "proposed_modes", "routing_decision"]
+      }
+    },
+    {
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "source_normalization_import_plan"}}
+      },
+      "then": {
+        "required": ["deliverable_type", "update_plan", "assumptions", "planning_quality"],
+        "properties": {
+          "deliverable_type": {"const": "source_normalization_import_plan"}
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "graph_compile_plan"}}
+      },
+      "then": {
+        "required": ["deliverable_type", "update_plan", "assumptions", "confidence_basis", "planning_quality"],
+        "properties": {
+          "deliverable_type": {"const": "graph_compile_plan"}
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["task_type"],
+        "properties": {"task_type": {"const": "export_plan"}}
+      },
+      "then": {
+        "required": ["deliverable_type", "update_plan", "assumptions", "confidence_basis", "planning_quality"],
+        "properties": {
+          "deliverable_type": {"const": "export_plan"}
+        }
       }
     }
   ]

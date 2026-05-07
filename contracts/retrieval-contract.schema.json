@@ -23,7 +23,10 @@
             "update_wiki",
             "source_guided_explain",
             "query",
-            "propose_options"
+            "propose_options",
+            "source_normalization_import_plan",
+            "graph_compile_plan",
+            "export_plan"
           ],
           "description": "The intended Project Wiki task mode for this retrieval."
         },
@@ -137,7 +140,13 @@
     },
     "retrieval_response": {
       "type": "object",
-      "required": ["hits", "coverage_assessment"],
+      "required": [
+        "hits",
+        "coverage_assessment",
+        "fallback_needed",
+        "clarification_needed",
+        "retrieval_mode_used"
+      ],
       "properties": {
         "hits": {
           "type": "array",
@@ -193,12 +202,48 @@
           "description": "Total number of candidate hits before filtering and ranking."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": ["fallback_needed"],
+            "properties": {"fallback_needed": {"const": true}}
+          },
+          "then": {"required": ["fallback_reason"]}
+        },
+        {
+          "if": {
+            "required": ["clarification_needed"],
+            "properties": {"clarification_needed": {"const": true}}
+          },
+          "then": {"required": ["clarification_reason"]}
+        },
+        {
+          "if": {
+            "required": ["coverage_assessment"],
+            "properties": {"coverage_assessment": {"enum": ["low", "none"]}}
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": ["fallback_needed", "fallback_reason"],
+                "properties": {"fallback_needed": {"const": true}}
+              },
+              {
+                "required": ["clarification_needed", "clarification_reason"],
+                "properties": {"clarification_needed": {"const": true}}
+              }
+            ]
+          }
+        }
+      ]
     }
   },
   "type": "object",
+  "required": ["request", "response"],
   "properties": {
     "request": {"$ref": "#/definitions/retrieval_request"},
     "response": {"$ref": "#/definitions/retrieval_response"}
-  }
+  },
+  "additionalProperties": false
 }
